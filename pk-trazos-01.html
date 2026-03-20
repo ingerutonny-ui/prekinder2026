@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prekinder - Trazos Geom&eacute;tricos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prekinder - Trazos Exactos</title>
     <style>
-        /* BASE NANCY ELEGANTE - ESCALADO 130% */
+        /* BASE NANCY ELEGANTE */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,33 +13,30 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: flex-start;
             overflow: hidden;
+            touch-action: none; /* Evita que la pantalla se mueva al dibujar */
         }
 
-        h1 { font-size: 2.2rem; color: #1a1a1a; margin: 20px 0 10px 0; font-weight: 900; }
-        .sub-t { font-size: 1rem; color: #555; margin-bottom: 20px; letter-spacing: 2px; }
+        h1 { font-size: 2.2rem; color: #1a1a1a; margin: 20px 0 5px 0; font-weight: 900; }
+        .sub-t { font-size: 1rem; color: #555; margin-bottom: 15px; letter-spacing: 2px; }
 
-        /* Contenedor del lienzo */
         #contenedor-canvas {
             position: relative;
-            width: 90%; max-width: 500px;
-            aspect-ratio: 1 / 1;
+            width: 320px; /* Tamaño fijo para evitar errores de cálculo */
+            height: 320px;
             background: #ffffff;
             border-radius: 40px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            overflow: hidden;
             border: 2px solid #eee;
-            zoom: 130%; /* Escalado solicitado */
+            zoom: 130%; /* Tu estilo Nancy Elegante */
         }
 
-        /* El Lienzo de Dibujo */
         #lienzoTrazos {
             position: absolute; inset: 0;
             width: 100%; height: 100%;
             z-index: 10;
-            cursor: crosshair;
+            touch-action: none;
         }
 
-        /* Guía Visual Tosca (Para reemplazar con Photoshop luego) */
         .guia-figura {
             position: absolute;
             top: 50%; left: 50%;
@@ -49,20 +46,16 @@
             pointer-events: none;
         }
 
-        .circulo { width: 250px; height: 250px; border-radius: 50%; }
-        .cuadrado { width: 220px; height: 220px; }
+        .circulo { width: 220px; height: 220px; border-radius: 50%; }
+        .cuadrado { width: 200px; height: 200px; }
         .triangulo { 
             width: 0; height: 0; 
-            border-left: 125px solid transparent;
-            border-right: 125px solid transparent;
-            border-bottom: 220px dashed #ccc;
-            border-top: none;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 180px dashed #ccc;
         }
 
-        /* Controles */
-        .controles {
-            display: flex; gap: 15px; margin-top: 30px;
-        }
+        .controles { display: flex; gap: 15px; margin-top: 80px; } /* Ajustado por el zoom */
         .btn {
             padding: 15px 30px; border: none; border-radius: 50px;
             font-weight: 900; cursor: pointer; color: white;
@@ -90,26 +83,33 @@
     <script>
         const canvas = document.getElementById('lienzoTrazos');
         const ctx = canvas.getContext('2d');
-        const contenedor = document.getElementById('contenedor-canvas');
         let dibujando = false;
+        const escalaZoom = 1.3; // Representa el 130% de tu estilo
 
         function ajustar() {
+            // Ajustamos el canvas a su tamaño real de visualización
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
             ctx.strokeStyle = '#3498db';
-            ctx.lineWidth = 12;
+            ctx.lineWidth = 10;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
         }
 
         window.onload = ajustar;
 
+        // LA CORRECCIÓN MAESTRA:
         function pos(e) {
             const r = canvas.getBoundingClientRect();
             const t = e.touches ? e.touches[0] : e;
-            return { x: t.clientX - r.left, y: t.clientY - r.top };
+            
+            // Dividimos entre escalaZoom para compensar el zoom: 130%
+            return { 
+                x: (t.clientX - r.left) / escalaZoom, 
+                y: (t.clientY - r.top) / escalaZoom 
+            };
         }
 
-        // --- LOS 3 EVENTOS ---
         function inicio(e) { 
             e.preventDefault(); 
             dibujando = true; 
@@ -120,6 +120,7 @@
 
         function mover(e) { 
             if(!dibujando) return; 
+            e.preventDefault();
             const p = pos(e); 
             ctx.lineTo(p.x, p.y); 
             ctx.stroke(); 
@@ -127,21 +128,16 @@
 
         function fin() { dibujando = false; }
 
-        // Táctil
         canvas.addEventListener('touchstart', inicio);
         canvas.addEventListener('touchmove', mover);
         canvas.addEventListener('touchend', fin);
-        // Mouse
         canvas.addEventListener('mousedown', inicio);
         canvas.addEventListener('mousemove', mover);
         canvas.addEventListener('mouseup', fin);
 
-        // Lógica de botones
         const figuras = ['circulo', 'cuadrado', 'triangulo'];
         let idx = 0;
-
         function limpiar() { ctx.clearRect(0,0,canvas.width, canvas.height); }
-        
         function cambiar() {
             limpiar();
             idx = (idx + 1) % figuras.length;
