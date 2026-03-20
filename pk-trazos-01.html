@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Prekinder - Trazos Exactos</title>
+    <title>Prekinder - Trazos Perfectos SVG</title>
     <style>
         /* BASE NANCY ELEGANTE */
         body, html {
@@ -13,15 +13,16 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: flex-start;
             overflow: hidden;
-            touch-action: none; /* Evita que la pantalla se mueva al dibujar */
+            touch-action: none; /* Evita scrolls incómodos al trazar */
         }
 
         h1 { font-size: 2.2rem; color: #1a1a1a; margin: 20px 0 5px 0; font-weight: 900; }
         .sub-t { font-size: 1rem; color: #555; margin-bottom: 15px; letter-spacing: 2px; }
 
+        /* Contenedor del lienzo con zoom 130% */
         #contenedor-canvas {
             position: relative;
-            width: 320px; /* Tamaño fijo para evitar errores de cálculo */
+            width: 320px; /* Tamaño base */
             height: 320px;
             background: #ffffff;
             border-radius: 40px;
@@ -33,29 +34,32 @@
         #lienzoTrazos {
             position: absolute; inset: 0;
             width: 100%; height: 100%;
-            z-index: 10;
+            z-index: 10; /* Arriba para dibujar */
             touch-action: none;
         }
 
-        .guia-figura {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            border: 10px dashed #ccc;
-            z-index: 5;
-            pointer-events: none;
+        /* Guías Visuales con SVG (Reemplaza CSS tosco) */
+        #guia-svg {
+            position: absolute; inset: 0;
+            z-index: 5; /* Abajo del trazo */
+            pointer-events: none; /* No interfiere con el táctil */
         }
 
-        .circulo { width: 220px; height: 220px; border-radius: 50%; }
-        .cuadrado { width: 200px; height: 200px; }
-        .triangulo { 
-            width: 0; height: 0; 
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 180px dashed #ccc;
+        /* Estilo de línea guía (punteado y gris suave) */
+        .linea-guia {
+            fill: none; /* Hueco por dentro */
+            stroke: #ccc; /* Gris suave */
+            stroke-width: 6; /* Ancho de la guía */
+            stroke-dasharray: 10, 10; /* Punteado perfecto */
+            stroke-linecap: round;
+            opacity: 0; /* Ocultas por defecto */
+            transition: opacity 0.3s;
         }
 
-        .controles { display: flex; gap: 15px; margin-top: 80px; } /* Ajustado por el zoom */
+        /* Mostrar solo la figura activa */
+        .activa { opacity: 1; }
+
+        .controles { display: flex; gap: 15px; margin-top: 80px; } /* Ajustado por zoom */
         .btn {
             padding: 15px 30px; border: none; border-radius: 50px;
             font-weight: 900; cursor: pointer; color: white;
@@ -71,7 +75,14 @@
     <p class="sub-t">TRAZA LA FIGURA</p>
 
     <div id="contenedor-canvas">
-        <div id="figura-guia" class="guia-figura circulo"></div>
+        <svg id="guia-svg" viewBox="0 0 320 320">
+            <circle id="circulo" class="linea-guia activa" cx="160" cy="160" r="100" />
+            
+            <rect id="cuadrado" class="linea-guia" x="60" y="60" width="200" height="200" rx="10" />
+            
+            <polygon id="triangulo" class="linea-guia" points="160,60 260,240 60,240" />
+        </svg>
+
         <canvas id="lienzoTrazos"></canvas>
     </div>
 
@@ -84,64 +95,53 @@
         const canvas = document.getElementById('lienzoTrazos');
         const ctx = canvas.getContext('2d');
         let dibujando = false;
-        const escalaZoom = 1.3; // Representa el 130% de tu estilo
+        const escalaZoom = 1.3; // Tu 130%
 
         function ajustar() {
-            // Ajustamos el canvas a su tamaño real de visualización
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
-            ctx.strokeStyle = '#3498db';
-            ctx.lineWidth = 10;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#3498db'; /* Azul brillante */
+            ctx.lineWidth = 12;          /* Trazo grueso */
+            ctx.lineCap = 'round';       /* Puntas redondas */
+            ctx.lineJoin = 'round';      /* Uniones suaves */
         }
 
         window.onload = ajustar;
 
-        // LA CORRECCIÓN MAESTRA:
+        // Compensación de coordenadas por zoom: 130%
         function pos(e) {
             const r = canvas.getBoundingClientRect();
             const t = e.touches ? e.touches[0] : e;
-            
-            // Dividimos entre escalaZoom para compensar el zoom: 130%
             return { 
                 x: (t.clientX - r.left) / escalaZoom, 
                 y: (t.clientY - r.top) / escalaZoom 
             };
         }
 
-        function inicio(e) { 
-            e.preventDefault(); 
-            dibujando = true; 
-            const p = pos(e);
-            ctx.beginPath(); 
-            ctx.moveTo(p.x, p.y); 
-        }
-
-        function mover(e) { 
-            if(!dibujando) return; 
-            e.preventDefault();
-            const p = pos(e); 
-            ctx.lineTo(p.x, p.y); 
-            ctx.stroke(); 
-        }
-
+        // Lógica de Trazos (Mouse y Táctil)
+        function inicio(e) { e.preventDefault(); dibujando = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+        function mover(e) { if(!dibujando) return; e.preventDefault(); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
         function fin() { dibujando = false; }
 
-        canvas.addEventListener('touchstart', inicio);
-        canvas.addEventListener('touchmove', mover);
-        canvas.addEventListener('touchend', fin);
-        canvas.addEventListener('mousedown', inicio);
-        canvas.addEventListener('mousemove', mover);
-        canvas.addEventListener('mouseup', fin);
+        canvas.addEventListener('touchstart', inicio); canvas.addEventListener('touchmove', mover); canvas.addEventListener('touchend', fin);
+        canvas.addEventListener('mousedown', inicio); canvas.addEventListener('mousemove', mover); canvas.addEventListener('mouseup', fin);
 
-        const figuras = ['circulo', 'cuadrado', 'triangulo'];
+        // Lógica de Figuras (SVG)
+        const figurasID = ['circulo', 'cuadrado', 'triangulo'];
         let idx = 0;
+
         function limpiar() { ctx.clearRect(0,0,canvas.width, canvas.height); }
+        
         function cambiar() {
             limpiar();
-            idx = (idx + 1) % figuras.length;
-            document.getElementById('figura-guia').className = 'guia-figura ' + figuras[idx];
+            // Quitar clase 'activa' de la figura actual
+            document.getElementById(figurasID[idx]).classList.remove('activa');
+            
+            // Avanzar
+            idx = (idx + 1) % figurasID.length;
+            
+            // Poner clase 'activa' a la nueva figura
+            document.getElementById(figurasID[idx]).classList.add('activa');
         }
     </script>
 </body>
