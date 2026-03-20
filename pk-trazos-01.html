@@ -3,107 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 3: Trazo Dinámico por Zonas</title>
+    <title>Clase 4: Validación de Geometría</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body, html {
-            width: 100vw; height: 100vh;
-            overflow: hidden; touch-action: none; /* BLOQUEO CLASE 1 */
-            background-color: #f0f4f8;
+        body, html { 
+            width: 100vw; height: 100vh; overflow: hidden; 
+            touch-action: none; background-color: #ecf0f1; 
             font-family: sans-serif;
         }
-
-        canvas {
-            display: block;
-            background-color: white;
-        }
-
-        #ui-guia {
-            position: absolute;
-            top: 20px; left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border-radius: 50px;
-            pointer-events: none;
-            font-weight: bold;
+        canvas { display: block; }
+        #mensaje {
+            position: absolute; top: 20px; width: 100%;
+            text-align: center; font-size: 1.5rem; font-weight: bold;
+            pointer-events: none; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <div id="ui-guia">CLASE 3: DIBUJO POR CUADRANTES</div>
+    <div id="mensaje">Traza dentro del círculo</div>
     <canvas id="lienzo"></canvas>
 
     <script>
         const canvas = document.getElementById('lienzo');
         const ctx = canvas.getContext('2d');
-        const guia = document.getElementById('ui-guia');
+        const msg = document.getElementById('mensaje');
         
         let dibujando = false;
 
-        // Ajuste de pantalla completa
-        function ajustarPantalla() {
+        // Definición de la figura central (Matemática)
+        const figura = {
+            x: 0, y: 0, radio: 100
+        };
+
+        function ajustar() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        }
-        window.onresize = ajustarPantalla;
-        ajustarPantalla();
-
-        // LÓGICA DE COLOR POR CUADRANTE (CLASE 2)
-        function obtenerColorZona(x, y) {
-            const w = canvas.width;
-            const h = canvas.height;
-            
-            if (x < w/3) return "#e74c3c";      // Izquierda: Rojo
-            if (x > (w*2)/3) return "#2ecc71";  // Derecha: Verde
-            return "#3498db";                   // Centro: Azul
+            figura.x = canvas.width / 2;
+            figura.y = canvas.height / 2;
+            dibujarGuia();
         }
 
-        function iniciarDibujo(e) {
+        function dibujarGuia() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Círculo guía (punteado)
+            ctx.beginPath();
+            ctx.arc(figura.x, figura.y, figura.radio, 0, Math.PI * 2);
+            ctx.strokeStyle = "#bdc3c7";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset para el dibujo del niño
+        }
+
+        function comprobarColision(x, y) {
+            // Fórmula de distancia entre dos puntos
+            const dx = x - figura.x;
+            const dy = y - figura.y;
+            const distancia = Math.sqrt(dx*dx + dy*dy);
+            return distancia <= figura.radio;
+        }
+
+        function iniciar(e) {
             e.preventDefault();
-            dibujando = true;
-            
             const t = e.touches ? e.touches[0] : e;
-            const x = t.clientX;
-            const y = t.clientY;
+            const estaDentro = comprobarColision(t.clientX, t.clientY);
 
-            // Configuramos el pincel según la zona de inicio
-            ctx.strokeStyle = obtenerColorZona(x, y);
+            dibujando = true;
+            ctx.beginPath();
+            ctx.moveTo(t.clientX, t.clientY);
+
+            // COLOR DINÁMICO SEGÚN VALIDACIÓN
+            if (estaDentro) {
+                ctx.strokeStyle = "#2ecc71"; // VERDE: Acierto
+                msg.innerText = "¡Muy bien! Estás dentro";
+                msg.style.color = "#2ecc71";
+            } else {
+                ctx.strokeStyle = "#e74c3c"; // ROJO: Error
+                msg.innerText = "¡Te saliste!";
+                msg.style.color = "#e74c3c";
+            }
             ctx.lineWidth = 15;
             ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            guia.innerText = "Dibujando en zona detectada";
         }
 
-        function trazar(e) {
+        function mover(e) {
             if (!dibujando) return;
-            e.preventDefault();
-            
             const t = e.touches ? e.touches[0] : e;
             ctx.lineTo(t.clientX, t.clientY);
             ctx.stroke();
         }
 
-        function detenerDibujo() {
-            dibujando = false;
-            guia.innerText = "¡Sigue trazando!";
-        }
+        window.onresize = ajustar;
+        ajustar();
 
-        // EVENTOS MAESTROS
-        canvas.addEventListener('touchstart', iniciarDibujo, {passive: false});
-        canvas.addEventListener('touchmove', trazar, {passive: false});
-        canvas.addEventListener('touchend', detenerDibujo);
+        canvas.addEventListener('touchstart', iniciar, {passive: false});
+        canvas.addEventListener('touchmove', mover, {passive: false});
+        canvas.addEventListener('touchend', () => { 
+            dibujando = false; 
+            setTimeout(dibujarGuia, 1500); // Limpia después de 1.5 seg
+        });
 
-        // Soporte Mouse para PC
-        canvas.addEventListener('mousedown', iniciarDibujo);
-        canvas.addEventListener('mousemove', trazar);
-        window.addEventListener('mouseup', detenerDibujo);
+        // Soporte Mouse
+        canvas.addEventListener('mousedown', iniciar);
+        canvas.addEventListener('mousemove', mover);
+        window.addEventListener('mouseup', () => dibujando = false);
     </script>
 </body>
 </html>
