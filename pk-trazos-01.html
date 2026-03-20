@@ -3,131 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 6: Control de Memoria y Estados</title>
+    <title>Clase 6: Gestión de Estados Táctiles</title>
     <style>
-        /* ESTILO NANCY ELEGANTE - PROYECTO PREKINDER 2026 */
+        /* ESTILO NANCY ELEGANTE 130% */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body, html { 
             width: 100%; height: 100%; 
-            overflow: hidden; 
+            overflow: hidden; touch-action: none;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            background-color: #f0f4f8; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            touch-action: none; /* BLOQUEO DE SCROLL OBLIGATORIO */
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        h2 { margin-bottom: 10px; color: #333; text-transform: uppercase; letter-spacing: 2px; }
-
-        #contenedor-lienzo {
-            background-color: white;
-            border: 3px solid #3498db;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            zoom: 130%; /* Zoom Nancy Elegante */
-            position: relative;
-            overflow: hidden;
-        }
-
-        canvas { display: block; cursor: crosshair; }
-
-        .controles {
-            margin-top: 25px;
+        #contenedor-principal {
+            zoom: 130%;
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            align-items: center;
         }
+
+        h2 { margin-bottom: 15px; color: #2c3e50; letter-spacing: 1px; }
+
+        #lienzo-marco {
+            background: white;
+            border: 4px solid #3498db;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        canvas { display: block; border-radius: 26px; }
+
+        #feedback {
+            position: absolute; top: 20px; width: 100%;
+            text-align: center; font-weight: 900; font-size: 1.2rem;
+            color: #2ecc71; pointer-events: none;
+        }
+
+        .botones { margin-top: 30px; display: flex; gap: 20px; }
 
         button {
-            padding: 15px 35px;
-            border: none;
-            border-radius: 50px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 15px 40px; border: none; border-radius: 50px;
+            color: white; font-size: 1rem; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
-        .btn-borrar { background-color: #ff5e57; }
-        .btn-borrar:active { background-color: #e24e48; transform: scale(0.95); }
-
-        .btn-siguiente { background-color: #0be881; }
-        .btn-siguiente:active { background-color: #09cc72; transform: scale(0.95); }
-
-        #monitor {
-            position: absolute;
-            top: 15px;
-            width: 100%;
-            text-align: center;
-            font-weight: 900;
-            pointer-events: none;
-            color: #2ecc71;
-        }
+        .borrar { background-color: #ff5e57; }
+        .siguiente { background-color: #0be881; }
+        button:active { transform: scale(0.92); }
     </style>
 </head>
 <body>
 
-    <h2>Clase 6: Gestión de Estados</h2>
-    
-    <div id="contenedor-lienzo">
-        <div id="monitor">TRAZA EL CÍRCULO</div>
-        <canvas id="lienzo"></canvas>
-    </div>
+    <div id="contenedor-principal">
+        <h2>CLASE 6: GESTIÓN DE ESTADOS</h2>
+        
+        <div id="lienzo-marco">
+            <div id="feedback">DIBUJA EL CÍRCULO</div>
+            <canvas id="lienzo"></canvas>
+        </div>
 
-    <div class="controles">
-        <button class="btn-borrar" onclick="borrarTodo()">BORRAR</button>
-        <button class="btn-siguiente" onclick="siguienteFigura()">SIGUIENTE</button>
+        <div class="botones">
+            <button class="borrar" onclick="btnBorrar()">BORRAR</button>
+            <button class="siguiente" onclick="btnSiguiente()">SIGUIENTE</button>
+        </div>
     </div>
 
     <script>
         const canvas = document.getElementById('lienzo');
         const ctx = canvas.getContext('2d');
-        const monitor = document.getElementById('monitor');
+        const feedback = document.getElementById('feedback');
         
         let dibujando = false;
-        let figuraActual = 0; // Estado del sistema
+        let indiceFigura = 0;
 
-        // Configuración de coordenadas de validación
         const figuras = [
-            { nombre: "CÍRCULO", r: 80 },
-            { nombre: "TRIÁNGULO", r: 100 },
-            { nombre: "CUADRADO", r: 90 }
+            { nombre: "CÍRCULO", radio: 85 },
+            { nombre: "CUADRADO", radio: 95 },
+            { nombre: "TRIÁNGULO", radio: 105 }
         ];
 
-        function ajustarLienzo() {
-            canvas.width = 300;
-            canvas.height = 300;
-            dibujarReferencia();
+        function inicializar() {
+            canvas.width = 320;
+            canvas.height = 320;
+            dibujarGuia();
         }
 
-        function dibujarReferencia() {
+        function dibujarGuia() {
+            // LIMPIEZA TOTAL DEL BÚFER
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Dibuja la referencia punteada
             ctx.beginPath();
-            ctx.arc(canvas.width/2, canvas.height/2, figuras[figuraActual].r, 0, Math.PI * 2);
-            ctx.strokeStyle = "#dfe6e9";
-            ctx.lineWidth = 4;
-            ctx.setLineDash([10, 10]);
+            ctx.setLineDash([8, 8]);
+            ctx.strokeStyle = "#dcdde1";
+            ctx.lineWidth = 3;
+            // Usamos un círculo como base de validación para todas las clases
+            ctx.arc(canvas.width/2, canvas.height/2, figuras[indiceFigura].radio, 0, Math.PI * 2);
             ctx.stroke();
-            ctx.setLineDash([]); // Reset
-            monitor.innerText = "DIBUJA EL " + figuras[figuraActual].nombre;
+            ctx.setLineDash([]);
+            
+            feedback.innerText = "DIBUJA EL " + figuras[indiceFigura].nombre;
+            feedback.style.color = "#2ecc71";
         }
 
-        // LÓGICA DE VALIDACIÓN (INGENIERÍA)
-        function estaEnRango(x, y) {
-            const dx = x - (canvas.width / 2);
-            const dy = y - (canvas.height / 2);
-            const distancia = Math.sqrt(dx*dx + dy*dy);
-            return distancia <= figuras[figuraActual].r;
-        }
-
-        function obtenerPosicion(e) {
+        function getPos(e) {
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            // Ajuste por el zoom del 130%
+            // Ajuste crucial para compensar el zoom del 130% (1.3)
             return {
                 x: (clientX - rect.left) / 1.3,
                 y: (clientY - rect.top) / 1.3
@@ -137,47 +124,49 @@
         function iniciar(e) {
             e.preventDefault();
             dibujando = true;
-            const pos = obtenerPosicion(e);
+            const p = getPos(e);
             ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+            ctx.moveTo(p.x, p.y);
         }
 
         function mover(e) {
             if (!dibujando) return;
-            const pos = obtenerPosicion(e);
-            const correcto = estaEnRango(pos.x, pos.y);
+            const p = getPos(e);
+            
+            // Lógica de validación
+            const dx = p.x - canvas.width/2;
+            const dy = p.y - canvas.height/2;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const ok = Math.abs(dist - figuras[indiceFigura].radio) < 20;
 
-            ctx.lineTo(pos.x, pos.y);
-            ctx.strokeStyle = correcto ? "#2ecc71" : "#e74c3c";
-            ctx.lineWidth = 10;
+            ctx.lineTo(p.x, p.y);
+            ctx.strokeStyle = ok ? "#2ecc71" : "#ff5e57";
+            ctx.lineWidth = 12;
             ctx.lineCap = "round";
             ctx.stroke();
-
-            // Reiniciamos camino para permitir cambio de color fluido
+            
             ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
+            ctx.moveTo(p.x, p.y);
 
-            monitor.innerText = correcto ? "¡VAS BIEN!" : "¡TE SALISTE!";
-            monitor.style.color = correcto ? "#2ecc71" : "#e74c3c";
+            feedback.innerText = ok ? "¡EXCELENTE!" : "¡TE SALISTE!";
+            feedback.style.color = ok ? "#2ecc71" : "#ff5e57";
         }
 
-        // COMANDOS DE CONTROL (CLASE 6)
-        function borrarTodo() {
-            dibujarReferencia();
-            monitor.style.color = "#2ecc71";
+        // FUNCIONES DE CONTROL DE ESTADO (CLASE 6)
+        function btnBorrar() {
+            dibujarGuia();
         }
 
-        function siguienteFigura() {
-            figuraActual = (figuraActual + 1) % figuras.length;
-            borrarTodo();
+        function btnSiguiente() {
+            indiceFigura = (indiceFigura + 1) % figuras.length;
+            dibujarGuia();
         }
 
-        // LISTENERS
         canvas.addEventListener('touchstart', iniciar, {passive: false});
         canvas.addEventListener('touchmove', mover, {passive: false});
         window.addEventListener('touchend', () => dibujando = false);
 
-        ajustarLienzo();
+        inicializar();
     </script>
 </body>
 </html>
