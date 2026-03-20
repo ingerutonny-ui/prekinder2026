@@ -3,68 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 1: Bloqueo de Pantalla</title>
+    <title>Clase 1: Bloqueo y Seccionamiento Total</title>
     <style>
-        /* ESTILO NANCY ELEGANTE: 130% Zoom y Bloqueo Total */
+        /* CONFIGURACIÓN DE PANTALLA COMPLETA */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;    /* Bloqueo de scroll */
+            touch-action: none;  /* Bloqueo de gestos del navegador */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #2c3e50;
-            overflow: hidden; /* BLOQUEO DE SCROLL */
-            touch-action: none; /* BLOQUEO DE GESTOS NATIVOS */
-            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #area-maestra {
-            width: 300px; height: 300px;
-            background-color: white;
-            border-radius: 20px;
-            display: flex; justify-content: center; align-items: center;
+        #indicador {
+            color: white;
+            font-size: 3rem;
+            font-weight: 900;
             text-align: center;
-            zoom: 130%; /* Escalado solicitado */
-            position: relative;
+            pointer-events: none; /* No interfiere con el toque */
+            text-transform: uppercase;
         }
 
-        #info { font-weight: bold; color: #34495e; font-size: 1.2rem; }
+        /* Guías visuales opcionales para que veas la división en el manual */
+        .guia-h { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.1); }
+        .guia-v { position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-    <div id="area-maestra">
-        <div id="info">TOCA UNA ESQUINA</div>
-    </div>
+    <div class="guia-h"></div>
+    <div class="guia-v"></div>
+    <div id="indicador">Toca la pantalla</div>
 
     <script>
-        const area = document.getElementById('area-maestra');
-        const info = document.getElementById('info');
+        const indicador = document.getElementById('indicador');
 
-        function detectarEsquina(e) {
-            e.preventDefault(); // PUNTO CLAVE: Bloquea cualquier reacción del navegador
+        function procesarToque(e) {
+            e.preventDefault(); // BLOQUEO TOTAL DE PANTALLA
             
-            const rect = area.getBoundingClientRect();
             const toque = e.touches ? e.touches[0] : e;
             
-            // Calculamos posición relativa al cuadro (ajustando el zoom 1.3)
-            const x = (toque.clientX - rect.left) / 1.3;
-            const y = (toque.clientY - rect.top) / 1.3;
+            // OBTENEMOS EL TAMAÑO TOTAL DE LA VENTANA (PC o Celular)
+            const anchoTotal = window.innerWidth;
+            const altoTotal = window.innerHeight;
 
-            // Lógica de Seccionamiento (Clase 1 - Nivel Inicial)
-            let mensaje = "";
-            if (x < 150 && y < 150) mensaje = "ESQUINA SUPERIOR IZQ.";
-            else if (x >= 150 && y < 150) mensaje = "ESQUINA SUPERIOR DER.";
-            else if (x < 150 && y >= 150) mensaje = "ESQUINA INFERIOR IZQ.";
-            else mensaje = "ESQUINA INFERIOR DER.";
+            // COORDENADAS DEL DEDO
+            const x = toque.clientX;
+            const y = toque.clientY;
 
-            info.innerText = mensaje;
-            area.style.backgroundColor = "#ecf0f1";
+            // LÓGICA DE SECCIONAMIENTO POR ESQUINAS
+            let seccion = "";
+            let color = "";
+
+            if (x < anchoTotal / 2 && y < altoTotal / 2) {
+                seccion = "Esquina Superior Izquierda";
+                color = "#e74c3c"; // Rojo
+            } else if (x >= anchoTotal / 2 && y < altoTotal / 2) {
+                seccion = "Esquina Superior Derecha";
+                color = "#3498db"; // Azul
+            } else if (x < anchoTotal / 2 && y >= altoTotal / 2) {
+                seccion = "Esquina Inferior Izquierda";
+                color = "#f1c40f"; // Amarillo
+            } else {
+                seccion = "Esquina Inferior Derecha";
+                color = "#2ecc71"; // Verde
+            }
+
+            document.body.style.backgroundColor = color;
+            indicador.innerText = seccion;
         }
 
-        // Eventos de inicio de toque
-        area.addEventListener('touchstart', detectarEsquina);
-        area.addEventListener('mousedown', detectarEsquina);
-        
-        // Al soltar volvemos al estado inicial
-        area.addEventListener('touchend', () => { area.style.backgroundColor = "white"; });
+        // ESCUCHAMOS EN TODA LA VENTANA (WINDOW)
+        window.addEventListener('touchstart', procesarToque, { passive: false });
+        window.addEventListener('mousedown', procesarToque);
+
+        // Reset al soltar
+        const reset = () => {
+            document.body.style.backgroundColor = "#2c3e50";
+            indicador.innerText = "Toca la pantalla";
+        };
+        window.addEventListener('touchend', reset);
+        window.addEventListener('mouseup', reset);
     </script>
 </body>
 </html>
