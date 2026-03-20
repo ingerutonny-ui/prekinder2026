@@ -3,89 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 1: Precisión y Control de Pantalla</title>
+    <title>Clase 1: Bloqueo de Pantalla</title>
     <style>
-        /* 1. EL CANDADO: Evitamos que la pantalla se mueva */
+        /* ESTILO NANCY ELEGANTE: 130% Zoom y Bloqueo Total */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; align-items: center;
-            background-color: #f0f4f8;
-            overflow: hidden; /* Prohibido el scroll en toda la web */
+            display: flex; justify-content: center; align-items: center;
+            background-color: #2c3e50;
+            overflow: hidden; /* BLOQUEO DE SCROLL */
+            touch-action: none; /* BLOQUEO DE GESTOS NATIVOS */
+            font-family: Arial, sans-serif;
         }
 
-        h1 { font-family: sans-serif; margin-top: 20px; color: #333; }
-
-        #contenedor {
+        #area-maestra {
+            width: 300px; height: 300px;
+            background-color: white;
+            border-radius: 20px;
+            display: flex; justify-content: center; align-items: center;
+            text-align: center;
+            zoom: 130%; /* Escalado solicitado */
             position: relative;
-            width: 320px; height: 320px;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-            zoom: 130%; /* Tu estilo Nancy Elegante */
-            touch-action: none; /* EL CANDADO TÁCTIL: No permite scroll sobre el lienzo */
         }
 
-        canvas, svg {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
+        #info { font-weight: bold; color: #34495e; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <h1>CLASE 1: PRECISIÓN</h1>
-
-    <div id="contenedor">
-        <svg viewBox="0 0 320 320">
-            <circle cx="160" cy="160" r="100" fill="none" stroke="#eee" stroke-width="5" stroke-dasharray="10"/>
-        </svg>
-        <canvas id="lienzo"></canvas>
+    <div id="area-maestra">
+        <div id="info">TOCA UNA ESQUINA</div>
     </div>
 
     <script>
-        const canvas = document.getElementById('lienzo');
-        const ctx = canvas.getContext('2d');
-        let dibujando = false;
+        const area = document.getElementById('area-maestra');
+        const info = document.getElementById('info');
 
-        // Ajuste de resolución interna
-        canvas.width = 320;
-        canvas.height = 320;
+        function detectarEsquina(e) {
+            e.preventDefault(); // PUNTO CLAVE: Bloquea cualquier reacción del navegador
+            
+            const rect = area.getBoundingClientRect();
+            const toque = e.touches ? e.touches[0] : e;
+            
+            // Calculamos posición relativa al cuadro (ajustando el zoom 1.3)
+            const x = (toque.clientX - rect.left) / 1.3;
+            const y = (toque.clientY - rect.top) / 1.3;
 
-        ctx.strokeStyle = "#3498db";
-        ctx.lineWidth = 10;
-        ctx.lineCap = "round";
+            // Lógica de Seccionamiento (Clase 1 - Nivel Inicial)
+            let mensaje = "";
+            if (x < 150 && y < 150) mensaje = "ESQUINA SUPERIOR IZQ.";
+            else if (x >= 150 && y < 150) mensaje = "ESQUINA SUPERIOR DER.";
+            else if (x < 150 && y >= 150) mensaje = "ESQUINA INFERIOR IZQ.";
+            else mensaje = "ESQUINA INFERIOR DER.";
 
-        // EL SECRETO DEL EXPERTO: Cálculo exacto con Zoom 1.3
-        function obtenerPunto(e) {
-            const rect = canvas.getBoundingClientRect();
-            const t = e.touches ? e.touches[0] : e;
-            return {
-                x: (t.clientX - rect.left) / 1.3,
-                y: (t.clientY - rect.top) / 1.3
-            };
+            info.innerText = mensaje;
+            area.style.backgroundColor = "#ecf0f1";
         }
 
-        // START: Punto clave 1
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Detiene cualquier movimiento de pantalla
-            dibujando = true;
-            const p = obtenerPunto(e);
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-        });
-
-        // MOVE: Punto clave 2
-        canvas.addEventListener('touchmove', (e) => {
-            if (!dibujando) return;
-            e.preventDefault(); 
-            const p = obtenerPunto(e);
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke();
-        });
-
-        // END: Punto clave 3
-        canvas.addEventListener('touchend', () => { dibujando = false; });
+        // Eventos de inicio de toque
+        area.addEventListener('touchstart', detectarEsquina);
+        area.addEventListener('mousedown', detectarEsquina);
+        
+        // Al soltar volvemos al estado inicial
+        area.addEventListener('touchend', () => { area.style.backgroundColor = "white"; });
     </script>
 </body>
 </html>
