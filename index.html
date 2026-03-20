@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efecto Elegante - Prekinder 2026</title>
+    <style>
+        /* Estilo base Nancy Elegante */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Fondo con imagen de muestra */
+        .fondo-imagen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=2070');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Capa de desenfoque total (Glassmorphism) */
+        .capa-vidrio {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(15px); /* Aquí se hace la magia del fondo borroso */
+            -webkit-backdrop-filter: blur(15px);
+            background-color: rgba(255, 255, 255, 0.2);
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Caja central elegante */
+        .mensaje-contenedor {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 50px 100px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            zoom: 130%; /* Escalado Nancy Elegante */
+        }
+
+        .texto-grande {
+            font-size: 80px;
+            font-weight: 900;
+            color: #1a1a1a;
+            margin: 0;
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fondo-imagen"></div>
+
+    <div class="capa-vidrio">
+        <div class="mensaje-contenedor">
+            <h1 class="texto-grande">YA VOTO</h1>
+        </div>
+    </div>
+
+</body>
+</html>
