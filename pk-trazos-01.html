@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 4: Validación de Geometría</title>
+    <title>Clase 5: Afinación y Validación Continua</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { 
             width: 100vw; height: 100vh; overflow: hidden; 
-            touch-action: none; background-color: #ecf0f1; 
-            font-family: sans-serif;
+            touch-action: none; background-color: #f8f9fa; 
+            font-family: 'Segoe UI', sans-serif;
         }
-        canvas { display: block; }
+        canvas { display: block; cursor: crosshair; }
         #mensaje {
-            position: absolute; top: 20px; width: 100%;
-            text-align: center; font-size: 1.5rem; font-weight: bold;
-            pointer-events: none; text-transform: uppercase;
+            position: absolute; top: 30px; width: 100%;
+            text-align: center; font-size: 2rem; font-weight: 900;
+            pointer-events: none; transition: all 0.2s;
         }
     </style>
 </head>
 <body>
 
-    <div id="mensaje">Traza dentro del círculo</div>
+    <div id="mensaje">SIGUE EL CAMINO</div>
     <canvas id="lienzo"></canvas>
 
     <script>
@@ -30,11 +30,7 @@
         const msg = document.getElementById('mensaje');
         
         let dibujando = false;
-
-        // Definición de la figura central (Matemática)
-        const figura = {
-            x: 0, y: 0, radio: 100
-        };
+        const figura = { x: 0, y: 0, radio: 120 };
 
         function ajustar() {
             canvas.width = window.innerWidth;
@@ -46,68 +42,69 @@
 
         function dibujarGuia() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Círculo guía (punteado)
+            // Sombra del objetivo
             ctx.beginPath();
             ctx.arc(figura.x, figura.y, figura.radio, 0, Math.PI * 2);
-            ctx.strokeStyle = "#bdc3c7";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([10, 10]);
+            ctx.strokeStyle = "#dfe6e9";
+            ctx.lineWidth = 5;
+            ctx.setLineDash([15, 15]);
             ctx.stroke();
-            ctx.setLineDash([]); // Reset para el dibujo del niño
+            ctx.setLineDash([]);
         }
 
-        function comprobarColision(x, y) {
-            // Fórmula de distancia entre dos puntos
+        function estaDentro(x, y) {
             const dx = x - figura.x;
             const dy = y - figura.y;
-            const distancia = Math.sqrt(dx*dx + dy*dy);
-            return distancia <= figura.radio;
+            return Math.sqrt(dx*dx + dy*dy) <= figura.radio;
+        }
+
+        function manejarMovimiento(e) {
+            if (!dibujando) return;
+            e.preventDefault();
+            const t = e.touches ? e.touches[0] : e;
+            const x = t.clientX;
+            const y = t.clientY;
+
+            // AFINACIÓN: Validamos en cada movimiento
+            const correcto = estaDentro(x, y);
+            
+            // Cambiamos el estilo de línea al vuelo
+            ctx.lineTo(x, y);
+            ctx.strokeStyle = correcto ? "#2ecc71" : "#e74c3c";
+            ctx.lineWidth = correcto ? 20 : 10; // Más grueso si es correcto
+            ctx.stroke();
+
+            // Creamos un nuevo camino para que el siguiente segmento pueda tener otro color
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+
+            // Feedback de texto
+            msg.innerText = correcto ? "¡EXCELENTE!" : "¡TE SALISTE!";
+            msg.style.color = correcto ? "#2ecc71" : "#e74c3c";
         }
 
         function iniciar(e) {
             e.preventDefault();
             const t = e.touches ? e.touches[0] : e;
-            const estaDentro = comprobarColision(t.clientX, t.clientY);
-
             dibujando = true;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
             ctx.beginPath();
             ctx.moveTo(t.clientX, t.clientY);
-
-            // COLOR DINÁMICO SEGÚN VALIDACIÓN
-            if (estaDentro) {
-                ctx.strokeStyle = "#2ecc71"; // VERDE: Acierto
-                msg.innerText = "¡Muy bien! Estás dentro";
-                msg.style.color = "#2ecc71";
-            } else {
-                ctx.strokeStyle = "#e74c3c"; // ROJO: Error
-                msg.innerText = "¡Te saliste!";
-                msg.style.color = "#e74c3c";
-            }
-            ctx.lineWidth = 15;
-            ctx.lineCap = "round";
-        }
-
-        function mover(e) {
-            if (!dibujando) return;
-            const t = e.touches ? e.touches[0] : e;
-            ctx.lineTo(t.clientX, t.clientY);
-            ctx.stroke();
         }
 
         window.onresize = ajustar;
         ajustar();
 
+        // Listeners afinados
         canvas.addEventListener('touchstart', iniciar, {passive: false});
-        canvas.addEventListener('touchmove', mover, {passive: false});
-        canvas.addEventListener('touchend', () => { 
-            dibujando = false; 
-            setTimeout(dibujarGuia, 1500); // Limpia después de 1.5 seg
-        });
+        canvas.addEventListener('touchmove', manejarMovimiento, {passive: false});
+        canvas.addEventListener('touchend', () => { dibujando = false; });
 
-        // Soporte Mouse
+        // Soporte PC
         canvas.addEventListener('mousedown', iniciar);
-        canvas.addEventListener('mousemove', mover);
-        window.addEventListener('mouseup', () => dibujando = false);
+        canvas.addEventListener('mousemove', manejarMovimiento);
+        window.addEventListener('mouseup', () => { dibujando = false; });
     </script>
 </body>
 </html>
