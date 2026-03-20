@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prekinder - Trazos Geom&eacute;tricos</title>
+    <style>
+        /* BASE NANCY ELEGANTE - ESCALADO 130% */
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        h1 { font-size: 2.2rem; color: #1a1a1a; margin: 20px 0 10px 0; font-weight: 900; }
+        .sub-t { font-size: 1rem; color: #555; margin-bottom: 20px; letter-spacing: 2px; }
+
+        /* Contenedor del lienzo */
+        #contenedor-canvas {
+            position: relative;
+            width: 90%; max-width: 500px;
+            aspect-ratio: 1 / 1;
+            background: #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid #eee;
+            zoom: 130%; /* Escalado solicitado */
+        }
+
+        /* El Lienzo de Dibujo */
+        #lienzoTrazos {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            z-index: 10;
+            cursor: crosshair;
+        }
+
+        /* Guía Visual Tosca (Para reemplazar con Photoshop luego) */
+        .guia-figura {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            border: 10px dashed #ccc;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .circulo { width: 250px; height: 250px; border-radius: 50%; }
+        .cuadrado { width: 220px; height: 220px; }
+        .triangulo { 
+            width: 0; height: 0; 
+            border-left: 125px solid transparent;
+            border-right: 125px solid transparent;
+            border-bottom: 220px dashed #ccc;
+            border-top: none;
+        }
+
+        /* Controles */
+        .controles {
+            display: flex; gap: 15px; margin-top: 30px;
+        }
+        .btn {
+            padding: 15px 30px; border: none; border-radius: 50px;
+            font-weight: 900; cursor: pointer; color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-borrar { background: #ff4d4d; }
+        .btn-sig { background: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <h1>PREKINDER 2026</h1>
+    <p class="sub-t">TRAZA LA FIGURA</p>
+
+    <div id="contenedor-canvas">
+        <div id="figura-guia" class="guia-figura circulo"></div>
+        <canvas id="lienzoTrazos"></canvas>
+    </div>
+
+    <div class="controles">
+        <button class="btn btn-borrar" onclick="limpiar()">BORRAR</button>
+        <button class="btn btn-sig" onclick="cambiar()">SIGUIENTE</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('lienzoTrazos');
+        const ctx = canvas.getContext('2d');
+        const contenedor = document.getElementById('contenedor-canvas');
+        let dibujando = false;
+
+        function ajustar() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 12;
+            ctx.lineCap = 'round';
+        }
+
+        window.onload = ajustar;
+
+        function pos(e) {
+            const r = canvas.getBoundingClientRect();
+            const t = e.touches ? e.touches[0] : e;
+            return { x: t.clientX - r.left, y: t.clientY - r.top };
+        }
+
+        // --- LOS 3 EVENTOS ---
+        function inicio(e) { 
+            e.preventDefault(); 
+            dibujando = true; 
+            const p = pos(e);
+            ctx.beginPath(); 
+            ctx.moveTo(p.x, p.y); 
+        }
+
+        function mover(e) { 
+            if(!dibujando) return; 
+            const p = pos(e); 
+            ctx.lineTo(p.x, p.y); 
+            ctx.stroke(); 
+        }
+
+        function fin() { dibujando = false; }
+
+        // Táctil
+        canvas.addEventListener('touchstart', inicio);
+        canvas.addEventListener('touchmove', mover);
+        canvas.addEventListener('touchend', fin);
+        // Mouse
+        canvas.addEventListener('mousedown', inicio);
+        canvas.addEventListener('mousemove', mover);
+        canvas.addEventListener('mouseup', fin);
+
+        // Lógica de botones
+        const figuras = ['circulo', 'cuadrado', 'triangulo'];
+        let idx = 0;
+
+        function limpiar() { ctx.clearRect(0,0,canvas.width, canvas.height); }
+        
+        function cambiar() {
+            limpiar();
+            idx = (idx + 1) % figuras.length;
+            document.getElementById('figura-guia').className = 'guia-figura ' + figuras[idx];
+        }
+    </script>
+</body>
+</html>
