@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Prekinder - Trazos Perfectos SVG</title>
+    <title>Clase 1: Precisión y Pincel Dinámico</title>
     <style>
-        /* BASE NANCY ELEGANTE */
+        /* ESTILO NANCY ELEGANTE - PREKINDER 2026 */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,76 +13,72 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: flex-start;
             overflow: hidden;
-            touch-action: none; /* Evita scrolls incómodos al trazar */
+            touch-action: none; /* Bloquea el scroll del navegador al dibujar */
         }
 
         h1 { font-size: 2.2rem; color: #1a1a1a; margin: 20px 0 5px 0; font-weight: 900; }
         .sub-t { font-size: 1rem; color: #555; margin-bottom: 15px; letter-spacing: 2px; }
 
-        /* Contenedor del lienzo con zoom 130% */
         #contenedor-canvas {
             position: relative;
-            width: 320px; /* Tamaño base */
+            width: 320px;
             height: 320px;
             background: #ffffff;
             border-radius: 40px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             border: 2px solid #eee;
-            zoom: 130%; /* Tu estilo Nancy Elegante */
+            zoom: 130%; /* Escalado Nancy Elegante solicitado */
         }
 
         #lienzoTrazos {
             position: absolute; inset: 0;
             width: 100%; height: 100%;
-            z-index: 10; /* Arriba para dibujar */
+            z-index: 10;
             touch-action: none;
+            cursor: crosshair;
         }
 
-        /* Guías Visuales con SVG (Reemplaza CSS tosco) */
         #guia-svg {
             position: absolute; inset: 0;
-            z-index: 5; /* Abajo del trazo */
-            pointer-events: none; /* No interfiere con el táctil */
+            z-index: 5;
+            pointer-events: none;
         }
 
-        /* Estilo de línea guía (punteado y gris suave) */
         .linea-guia {
-            fill: none; /* Hueco por dentro */
-            stroke: #ccc; /* Gris suave */
-            stroke-width: 6; /* Ancho de la guía */
-            stroke-dasharray: 10, 10; /* Punteado perfecto */
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 6;
+            stroke-dasharray: 10, 10;
             stroke-linecap: round;
-            opacity: 0; /* Ocultas por defecto */
+            opacity: 0;
             transition: opacity 0.3s;
         }
 
-        /* Mostrar solo la figura activa */
         .activa { opacity: 1; }
 
-        .controles { display: flex; gap: 15px; margin-top: 80px; } /* Ajustado por zoom */
+        .controles { display: flex; gap: 15px; margin-top: 80px; }
         .btn {
             padding: 15px 30px; border: none; border-radius: 50px;
             font-weight: 900; cursor: pointer; color: white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
         }
+        .btn:active { transform: scale(0.95); }
         .btn-borrar { background: #ff4d4d; }
         .btn-sig { background: #2ecc71; }
     </style>
 </head>
 <body>
 
-    <h1>PREKINDER 2026</h1>
-    <p class="sub-t">TRAZA LA FIGURA</p>
+    <h1>CLASE 1: PRECISIÓN</h1>
+    <p class="sub-t">TRAZO DINÁMICO</p>
 
     <div id="contenedor-canvas">
         <svg id="guia-svg" viewBox="0 0 320 320">
             <circle id="circulo" class="linea-guia activa" cx="160" cy="160" r="100" />
-            
             <rect id="cuadrado" class="linea-guia" x="60" y="60" width="200" height="200" rx="10" />
-            
             <polygon id="triangulo" class="linea-guia" points="160,60 260,240 60,240" />
         </svg>
-
         <canvas id="lienzoTrazos"></canvas>
     </div>
 
@@ -95,53 +91,86 @@
         const canvas = document.getElementById('lienzoTrazos');
         const ctx = canvas.getContext('2d');
         let dibujando = false;
-        const escalaZoom = 1.3; // Tu 130%
+        const escalaZoom = 1.3; // Compensación para zoom: 130%
+
+        // Variables para el Pincel Dinámico (Clase 1)
+        let ultX = 0;
+        let ultY = 0;
 
         function ajustar() {
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
-            ctx.strokeStyle = '#3498db'; /* Azul brillante */
-            ctx.lineWidth = 12;          /* Trazo grueso */
-            ctx.lineCap = 'round';       /* Puntas redondas */
-            ctx.lineJoin = 'round';      /* Uniones suaves */
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#3498db';
         }
 
         window.onload = ajustar;
 
-        // Compensación de coordenadas por zoom: 130%
-        function pos(e) {
-            const r = canvas.getBoundingClientRect();
-            const t = e.touches ? e.touches[0] : e;
-            return { 
-                x: (t.clientX - r.left) / escalaZoom, 
-                y: (t.clientY - r.top) / escalaZoom 
+        // FUNCIÓN MAESTRA DE COORDENADAS
+        function obtenerPosicion(e) {
+            const rect = canvas.getBoundingClientRect();
+            const cliente = e.touches ? e.touches[0] : e;
+            
+            // Fórmula: (Posición en Pantalla - Margen del Canvas) / Escala
+            return {
+                x: (cliente.clientX - rect.left) / escalaZoom,
+                y: (cliente.clientY - rect.top) / escalaZoom
             };
         }
 
-        // Lógica de Trazos (Mouse y Táctil)
-        function inicio(e) { e.preventDefault(); dibujando = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
-        function mover(e) { if(!dibujando) return; e.preventDefault(); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
-        function fin() { dibujando = false; }
+        function iniciar(e) {
+            e.preventDefault();
+            dibujando = true;
+            const p = obtenerPosicion(e);
+            ultX = p.x;
+            ultY = p.y;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+        }
 
-        canvas.addEventListener('touchstart', inicio); canvas.addEventListener('touchmove', mover); canvas.addEventListener('touchend', fin);
-        canvas.addEventListener('mousedown', inicio); canvas.addEventListener('mousemove', mover); canvas.addEventListener('mouseup', fin);
+        function mover(e) {
+            if (!dibujando) return;
+            e.preventDefault();
+            const p = obtenerPosicion(e);
 
-        // Lógica de Figuras (SVG)
-        const figurasID = ['circulo', 'cuadrado', 'triangulo'];
+            // CÁLCULO DE VELOCIDAD PARA EL PINCEL (Didáctico)
+            const dx = p.x - ultX;
+            const dy = p.y - ultY;
+            const distancia = Math.sqrt(dx * dx + dy * dy);
+            
+            // Si mueve rápido (>10px), el trazo se vuelve fino
+            const grosorDinamico = Math.max(4, 16 - (distancia / 2));
+            ctx.lineWidth = grosorDinamico;
+
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+
+            ultX = p.x;
+            ultY = p.y;
+        }
+
+        function detener() { dibujando = false; }
+
+        // Eventos Touch
+        canvas.addEventListener('touchstart', iniciar);
+        canvas.addEventListener('touchmove', mover);
+        canvas.addEventListener('touchend', detener);
+
+        // Eventos Mouse (Para pruebas en PC)
+        canvas.addEventListener('mousedown', iniciar);
+        canvas.addEventListener('mousemove', mover);
+        canvas.addEventListener('mouseup', detener);
+
+        // Lógica de cambio de figuras
+        const figuras = ['circulo', 'cuadrado', 'triangulo'];
         let idx = 0;
-
-        function limpiar() { ctx.clearRect(0,0,canvas.width, canvas.height); }
-        
+        function limpiar() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
         function cambiar() {
             limpiar();
-            // Quitar clase 'activa' de la figura actual
-            document.getElementById(figurasID[idx]).classList.remove('activa');
-            
-            // Avanzar
-            idx = (idx + 1) % figurasID.length;
-            
-            // Poner clase 'activa' a la nueva figura
-            document.getElementById(figurasID[idx]).classList.add('activa');
+            document.getElementById(figuras[idx]).classList.remove('activa');
+            idx = (idx + 1) % figuras.length;
+            document.getElementById(figuras[idx]).classList.add('activa');
         }
     </script>
 </body>
