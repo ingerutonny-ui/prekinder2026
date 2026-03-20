@@ -3,92 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 1: Bloqueo y Seccionamiento Total</title>
+    <title>Clase 2: Rejilla de Control Central</title>
     <style>
-        /* CONFIGURACIÓN DE PANTALLA COMPLETA */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body, html {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;    /* Bloqueo de scroll */
-            touch-action: none;  /* Bloqueo de gestos del navegador */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100vw; height: 100vh;
+            overflow: hidden; touch-action: none;
+            font-family: 'Segoe UI', sans-serif;
             background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
         #indicador {
-            color: white;
-            font-size: 3rem;
-            font-weight: 900;
-            text-align: center;
-            pointer-events: none; /* No interfiere con el toque */
-            text-transform: uppercase;
+            color: white; font-size: 2.5rem; font-weight: 900;
+            text-align: center; text-transform: uppercase;
+            z-index: 10;
         }
 
-        /* Guías visuales opcionales para que veas la división en el manual */
-        .guia-h { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.1); }
-        .guia-v { position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: rgba(255,255,255,0.1); }
+        /* Guías de Rejilla para el Manual */
+        .linea { position: absolute; background: rgba(255,255,255,0.05); }
+        .h1 { top: 33.3%; left: 0; width: 100%; height: 2px; }
+        .h2 { top: 66.6%; left: 0; width: 100%; height: 2px; }
+        .v1 { left: 33.3%; top: 0; width: 2px; height: 100%; }
+        .v2 { left: 66.6%; top: 0; width: 2px; height: 100%; }
     </style>
 </head>
 <body>
 
-    <div class="guia-h"></div>
-    <div class="guia-v"></div>
-    <div id="indicador">Toca la pantalla</div>
+    <div class="linea h1"></div><div class="linea h2"></div>
+    <div class="linea v1"></div><div class="linea v2"></div>
+
+    <div id="indicador">Toca el centro</div>
 
     <script>
         const indicador = document.getElementById('indicador');
 
-        function procesarToque(e) {
-            e.preventDefault(); // BLOQUEO TOTAL DE PANTALLA
+        function analizarZona(e) {
+            e.preventDefault();
+            const t = e.touches ? e.touches[0] : e;
             
-            const toque = e.touches ? e.touches[0] : e;
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const x = t.clientX;
+            const y = t.clientY;
+
+            let regionVertical = "";
+            let regionHorizontal = "";
+            let color = "#34495e";
+
+            // LÓGICA DE TERCIOS (Rejilla 3x3)
+            // Vertical
+            if (y < h / 3) regionVertical = "Superior";
+            else if (y < (h * 2) / 3) regionVertical = "Central";
+            else regionVertical = "Inferior";
+
+            // Horizontal
+            if (x < w / 3) regionHorizontal = "Izquierdo";
+            else if (x < (w * 2) / 3) regionHorizontal = "Central";
+            else regionHorizontal = "Derecho";
+
+            // Identificación Final
+            const zonaFinal = `Cuadro ${regionVertical} ${regionHorizontal}`;
             
-            // OBTENEMOS EL TAMAÑO TOTAL DE LA VENTANA (PC o Celular)
-            const anchoTotal = window.innerWidth;
-            const altoTotal = window.innerHeight;
-
-            // COORDENADAS DEL DEDO
-            const x = toque.clientX;
-            const y = toque.clientY;
-
-            // LÓGICA DE SECCIONAMIENTO POR ESQUINAS
-            let seccion = "";
-            let color = "";
-
-            if (x < anchoTotal / 2 && y < altoTotal / 2) {
-                seccion = "Esquina Superior Izquierda";
-                color = "#e74c3c"; // Rojo
-            } else if (x >= anchoTotal / 2 && y < altoTotal / 2) {
-                seccion = "Esquina Superior Derecha";
-                color = "#3498db"; // Azul
-            } else if (x < anchoTotal / 2 && y >= altoTotal / 2) {
-                seccion = "Esquina Inferior Izquierda";
-                color = "#f1c40f"; // Amarillo
-            } else {
-                seccion = "Esquina Inferior Derecha";
-                color = "#2ecc71"; // Verde
+            // Color especial para el Centro Perfecto
+            if (regionVertical === "Central" && regionHorizontal === "Central") {
+                color = "#e67e22"; // Naranja Alerta (Centro)
             }
 
             document.body.style.backgroundColor = color;
-            indicador.innerText = seccion;
+            indicador.innerText = zonaFinal;
         }
 
-        // ESCUCHAMOS EN TODA LA VENTANA (WINDOW)
-        window.addEventListener('touchstart', procesarToque, { passive: false });
-        window.addEventListener('mousedown', procesarToque);
-
-        // Reset al soltar
-        const reset = () => {
+        window.addEventListener('touchstart', analizarZona, { passive: false });
+        window.addEventListener('mousedown', analizarZona);
+        
+        window.addEventListener('touchend', () => {
             document.body.style.backgroundColor = "#2c3e50";
-            indicador.innerText = "Toca la pantalla";
-        };
-        window.addEventListener('touchend', reset);
-        window.addEventListener('mouseup', reset);
+            indicador.innerText = "Toca una zona";
+        });
     </script>
 </body>
 </html>
