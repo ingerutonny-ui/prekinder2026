@@ -3,103 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 1: Precisión Pura</title>
+    <title>Clase 1: Precisión y Control de Pantalla</title>
     <style>
-        /* ESTILO BASE */
+        /* 1. EL CANDADO: Evitamos que la pantalla se mueva */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             background-color: #f0f4f8;
-            overflow: hidden; 
-            touch-action: none; /* BLOQUEO DE SCROLL OBLIGATORIO */
+            overflow: hidden; /* Prohibido el scroll en toda la web */
         }
 
-        h2 { font-family: sans-serif; color: #333; margin-bottom: 10px; }
+        h1 { font-family: sans-serif; margin-top: 20px; color: #333; }
 
-        #lienzo {
-            background-color: white;
-            border: 3px solid #3498db;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            /* Zoom Nancy Elegante 130% */
-            zoom: 130%; 
-            cursor: crosshair;
+        #contenedor {
+            position: relative;
+            width: 320px; height: 320px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            zoom: 130%; /* Tu estilo Nancy Elegante */
+            touch-action: none; /* EL CANDADO TÁCTIL: No permite scroll sobre el lienzo */
+        }
+
+        canvas, svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
     </style>
 </head>
 <body>
 
-    <h2>CLASE 1: LIENZO PURO</h2>
-    
-    <canvas id="lienzo" width="300" height="300"></canvas>
+    <h1>CLASE 1: PRECISIÓN</h1>
+
+    <div id="contenedor">
+        <svg viewBox="0 0 320 320">
+            <circle cx="160" cy="160" r="100" fill="none" stroke="#eee" stroke-width="5" stroke-dasharray="10"/>
+        </svg>
+        <canvas id="lienzo"></canvas>
+    </div>
 
     <script>
         const canvas = document.getElementById('lienzo');
         const ctx = canvas.getContext('2d');
         let dibujando = false;
 
-        // Configuración estética del trazo
-        ctx.strokeStyle = "#3498db";
-        ctx.lineWidth = 8;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
+        // Ajuste de resolución interna
+        canvas.width = 320;
+        canvas.height = 320;
 
-        /**
-         * FUNCIÓN DE PRECISIÓN (El corazón de la clase)
-         * Convierte la posición del dedo en coordenadas del canvas.
-         */
-        function obtenerPos(e) {
+        ctx.strokeStyle = "#3498db";
+        ctx.lineWidth = 10;
+        ctx.lineCap = "round";
+
+        // EL SECRETO DEL EXPERTO: Cálculo exacto con Zoom 1.3
+        function obtenerPunto(e) {
             const rect = canvas.getBoundingClientRect();
-            // Detecta si es toque (touches) o mouse (cliente)
-            const origen = e.touches ? e.touches[0] : e;
-            
+            const t = e.touches ? e.touches[0] : e;
             return {
-                // FÓRMULA: (Posición dedo - Margen lienzo) / Factor de Zoom
-                x: (origen.clientX - rect.left) / 1.3,
-                y: (origen.clientY - rect.top) / 1.3
+                x: (t.clientX - rect.left) / 1.3,
+                y: (t.clientY - rect.top) / 1.3
             };
         }
 
-        // EVENTOS DE COMUNICACIÓN (START, MOVE, END)
-        
-        // 1. Iniciar trazo
+        // START: Punto clave 1
         canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Detiene cualquier movimiento de pantalla
             dibujando = true;
-            const p = obtenerPos(e);
+            const p = obtenerPunto(e);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
         });
 
-        // 2. Dibujar mientras se mueve
+        // MOVE: Punto clave 2
         canvas.addEventListener('touchmove', (e) => {
             if (!dibujando) return;
-            e.preventDefault();
-            const p = obtenerPos(e);
+            e.preventDefault(); 
+            const p = obtenerPunto(e);
             ctx.lineTo(p.x, p.y);
             ctx.stroke();
         });
 
-        // 3. Detener trazo
-        canvas.addEventListener('touchend', () => {
-            dibujando = false;
-        });
-
-        // Soporte para Mouse (para probar en tu PC)
-        canvas.addEventListener('mousedown', (e) => {
-            dibujando = true;
-            const p = obtenerPos(e);
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-        });
-        canvas.addEventListener('mousemove', (e) => {
-            if (!dibujando) return;
-            const p = obtenerPos(e);
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke();
-        });
-        window.addEventListener('mouseup', () => dibujando = false);
+        // END: Punto clave 3
+        canvas.addEventListener('touchend', () => { dibujando = false; });
     </script>
 </body>
 </html>
