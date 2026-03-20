@@ -3,175 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 1: Precisión y Pincel Dinámico</title>
+    <title>Clase 1: El Toque Básico</title>
     <style>
-        /* ESTILO NANCY ELEGANTE - PREKINDER 2026 */
+        /* ESTILO NANCY ELEGANTE BASE */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; justify-content: center; align-items: center;
             background-color: #f0f4f8;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-start;
-            overflow: hidden;
-            touch-action: none; /* Bloquea el scroll del navegador al dibujar */
+            overflow: hidden; 
+            touch-action: none; /* EVITA QUE LA PANTALLA SE MUEVA AL DIBUJAR */
         }
 
-        h1 { font-size: 2.2rem; color: #1a1a1a; margin: 20px 0 5px 0; font-weight: 900; }
-        .sub-t { font-size: 1rem; color: #555; margin-bottom: 15px; letter-spacing: 2px; }
-
-        #contenedor-canvas {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            background: #ffffff;
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            border: 2px solid #eee;
-            zoom: 130%; /* Escalado Nancy Elegante solicitado */
+        #lienzo {
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            zoom: 130%; /* TU ESCALADO PERSONALIZADO */
         }
-
-        #lienzoTrazos {
-            position: absolute; inset: 0;
-            width: 100%; height: 100%;
-            z-index: 10;
-            touch-action: none;
-            cursor: crosshair;
-        }
-
-        #guia-svg {
-            position: absolute; inset: 0;
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        .linea-guia {
-            fill: none;
-            stroke: #ccc;
-            stroke-width: 6;
-            stroke-dasharray: 10, 10;
-            stroke-linecap: round;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .activa { opacity: 1; }
-
-        .controles { display: flex; gap: 15px; margin-top: 80px; }
-        .btn {
-            padding: 15px 30px; border: none; border-radius: 50px;
-            font-weight: 900; cursor: pointer; color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
-        }
-        .btn:active { transform: scale(0.95); }
-        .btn-borrar { background: #ff4d4d; }
-        .btn-sig { background: #2ecc71; }
     </style>
 </head>
 <body>
 
-    <h1>CLASE 1: PRECISIÓN</h1>
-    <p class="sub-t">TRAZO DINÁMICO</p>
-
-    <div id="contenedor-canvas">
-        <svg id="guia-svg" viewBox="0 0 320 320">
-            <circle id="circulo" class="linea-guia activa" cx="160" cy="160" r="100" />
-            <rect id="cuadrado" class="linea-guia" x="60" y="60" width="200" height="200" rx="10" />
-            <polygon id="triangulo" class="linea-guia" points="160,60 260,240 60,240" />
-        </svg>
-        <canvas id="lienzoTrazos"></canvas>
-    </div>
-
-    <div class="controles">
-        <button class="btn btn-borrar" onclick="limpiar()">BORRAR</button>
-        <button class="btn btn-sig" onclick="cambiar()">SIGUIENTE</button>
-    </div>
+    <canvas id="lienzo" width="300" height="300"></canvas>
 
     <script>
-        const canvas = document.getElementById('lienzoTrazos');
+        const canvas = document.getElementById('lienzo');
         const ctx = canvas.getContext('2d');
         let dibujando = false;
-        const escalaZoom = 1.3; // Compensación para zoom: 130%
 
-        // Variables para el Pincel Dinámico (Clase 1)
-        let ultX = 0;
-        let ultY = 0;
+        // CONFIGURACIÓN DEL PINCEL
+        ctx.strokeStyle = "#3498db"; // Azul
+        ctx.lineWidth = 10;          // Grueso para niños
+        ctx.lineCap = "round";       // Punta redondeada
 
-        function ajustar() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.strokeStyle = '#3498db';
-        }
-
-        window.onload = ajustar;
-
-        // FUNCIÓN MAESTRA DE COORDENADAS
-        function obtenerPosicion(e) {
-            const rect = canvas.getBoundingClientRect();
-            const cliente = e.touches ? e.touches[0] : e;
+        // LA FUNCIÓN MÁS IMPORTANTE: ¿DÓNDE ESTÁ EL DEDO?
+        function obtenerCoordenadas(e) {
+            const rect = canvas.getBoundingClientRect(); // Localiza el canvas en la pantalla
+            const toque = e.touches ? e.touches[0] : e;  // Detecta si es dedo o mouse
             
-            // Fórmula: (Posición en Pantalla - Margen del Canvas) / Escala
             return {
-                x: (cliente.clientX - rect.left) / escalaZoom,
-                y: (cliente.clientY - rect.top) / escalaZoom
+                // EXPLICACIÓN: Restamos el margen y dividimos por 1.3 (tu zoom)
+                x: (toque.clientX - rect.left) / 1.3,
+                y: (toque.clientY - rect.top) / 1.3
             };
         }
 
-        function iniciar(e) {
-            e.preventDefault();
+        // 1. INICIO: Cuando el dedo toca la pantalla (START)
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Evita scroll
             dibujando = true;
-            const p = obtenerPosicion(e);
-            ultX = p.x;
-            ultY = p.y;
+            const p = obtenerCoordenadas(e);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
-        }
+        });
 
-        function mover(e) {
+        // 2. MOVIMIENTO: Cuando el dedo se desliza (MOVE)
+        canvas.addEventListener('touchmove', (e) => {
             if (!dibujando) return;
             e.preventDefault();
-            const p = obtenerPosicion(e);
-
-            // CÁLCULO DE VELOCIDAD PARA EL PINCEL (Didáctico)
-            const dx = p.x - ultX;
-            const dy = p.y - ultY;
-            const distancia = Math.sqrt(dx * dx + dy * dy);
-            
-            // Si mueve rápido (>10px), el trazo se vuelve fino
-            const grosorDinamico = Math.max(4, 16 - (distancia / 2));
-            ctx.lineWidth = grosorDinamico;
-
+            const p = obtenerCoordenadas(e);
             ctx.lineTo(p.x, p.y);
             ctx.stroke();
+        });
 
-            ultX = p.x;
-            ultY = p.y;
-        }
-
-        function detener() { dibujando = false; }
-
-        // Eventos Touch
-        canvas.addEventListener('touchstart', iniciar);
-        canvas.addEventListener('touchmove', mover);
-        canvas.addEventListener('touchend', detener);
-
-        // Eventos Mouse (Para pruebas en PC)
-        canvas.addEventListener('mousedown', iniciar);
-        canvas.addEventListener('mousemove', mover);
-        canvas.addEventListener('mouseup', detener);
-
-        // Lógica de cambio de figuras
-        const figuras = ['circulo', 'cuadrado', 'triangulo'];
-        let idx = 0;
-        function limpiar() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-        function cambiar() {
-            limpiar();
-            document.getElementById(figuras[idx]).classList.remove('activa');
-            idx = (idx + 1) % figuras.length;
-            document.getElementById(figuras[idx]).classList.add('activa');
-        }
+        // 3. FIN: Cuando el dedo se levanta (END)
+        canvas.addEventListener('touchend', () => {
+            dibujando = false;
+        });
     </script>
 </body>
 </html>
