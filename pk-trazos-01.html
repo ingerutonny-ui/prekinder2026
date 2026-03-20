@@ -3,176 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clase 6: Gestión de Estados Táctiles</title>
+    <title>Clase 6: Posicionamiento Dinámico</title>
     <style>
-        /* DISEÑO NANCY ELEGANTE - SIN ZOOM CSS PARA EVITAR ERRORES */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body, html { 
-            width: 100%; height: 100%; 
-            overflow: hidden; touch-action: none;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        h2 { margin-bottom: 20px; color: #2c3e50; text-transform: uppercase; }
-
-        #marco-canvas {
-            background: white;
-            padding: 10px;
-            border: 6px solid #3498db;
-            border-radius: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            position: relative;
-        }
-
-        canvas { 
-            display: block; 
-            border-radius: 30px; 
-            background-color: #ffffff;
-            touch-action: none;
-        }
-
-        #instrucciones {
-            position: absolute; top: 30px; width: 100%;
-            text-align: center; font-size: 1.5rem; font-weight: 900;
-            color: #2ecc71; pointer-events: none;
-        }
-
-        .botones-container { margin-top: 40px; display: flex; gap: 25px; }
-
-        button {
-            padding: 20px 50px; border: none; border-radius: 60px;
-            color: white; font-size: 1.2rem; font-weight: bold;
-            cursor: pointer; transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .btn-rojo { background-color: #ff5e57; }
-        .btn-verde { background-color: #0be881; }
-        button:active { transform: scale(0.9); }
+        /* ESTILO NANCY ELEGANTE 130% */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #2c3e50; touch-action: none; }
+        canvas { display: block; background: #ecf0f1; zoom: 130%; } /* Zoom solicitado */
+        #info { position: absolute; top: 10px; left: 10px; color: white; font-family: sans-serif; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <h2>Clase 6: Gestión de Estados</h2>
-    
-    <div id="marco-canvas">
-        <div id="instrucciones">DIBUJA EL CÍRCULO</div>
-        <canvas id="lienzo"></canvas>
-    </div>
-
-    <div class="botones-container">
-        <button class="btn-rojo" onclick="limpiar()">BORRAR</button>
-        <button class="btn-verde" onclick="siguiente()">SIGUIENTE</button>
-    </div>
+    <div id="info">MUEVE EL DEDO PARA VALIDAR LAS COORDENADAS</div>
+    <canvas id="lienzo"></canvas>
 
     <script>
         const canvas = document.getElementById('lienzo');
         const ctx = canvas.getContext('2d');
-        const msg = document.getElementById('instrucciones');
-        
-        let dibujando = false;
-        let figuraID = 0;
 
-        const baseFiguras = [
-            { id: "CÍRCULO", radio: 100 },
-            { id: "CUADRADO", radio: 110 },
-            { id: "TRIÁNGULO", radio: 120 }
-        ];
+        // AJUSTE MANUAL: Cambie estos valores para mover el área de éxito
+        const AREA = {
+            ancho: 150,
+            alto: 150,
+            // Aquí se define la posición:
+            x: 20,              // 20px desde la izquierda
+            y: window.innerHeight / 1.3 - 170 // Cálculo para que quede abajo (ajustado por zoom)
+        };
 
-        function inicializarDispositivo() {
-            // Tamaño fijo para asegurar precisión matemática
-            canvas.width = 400;
-            canvas.height = 400;
-            redibujarTodo();
+        function configurar() {
+            canvas.width = window.innerWidth / 1.3; // Ajuste por el zoom 130%
+            canvas.height = window.innerHeight / 1.3;
+            dibujarAreaDestino();
         }
 
-        function redibujarTodo() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Dibujo de la Guía (Estado Inicial)
-            ctx.beginPath();
-            ctx.setLineDash([10, 10]);
-            ctx.strokeStyle = "#ecf0f1";
-            ctx.lineWidth = 5;
-            ctx.arc(canvas.width/2, canvas.height/2, baseFiguras[figuraID].radio, 0, Math.PI * 2);
-            ctx.stroke();
+        function dibujarAreaDestino() {
+            ctx.strokeStyle = "#3498db";
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(AREA.x, AREA.y, AREA.ancho, AREA.alto);
             ctx.setLineDash([]);
-            
-            msg.innerText = "DIBUJA EL " + baseFiguras[figuraID].id;
-            msg.style.color = "#2ecc71";
         }
 
-        function obtenerCoordenadas(e) {
+        function validarYDibujar(e) {
+            e.preventDefault();
+            // Detectar si es Touch o Mouse de forma automática
+            const touch = e.touches ? e.touches[0] : e;
             const rect = canvas.getBoundingClientRect();
-            // Soporte Multitouch y Mouse
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
+            // EL SECRETO: Coordenadas relativas al lienzo
+            const posX = (touch.clientX - rect.left) / 1.3;
+            const posY = (touch.clientY - rect.top) / 1.3;
+
+            // VALIDACIÓN MATEMÁTICA: ¿Está dentro del cuadrado?
+            const estaDentro = (posX >= AREA.x && posX <= AREA.x + AREA.ancho &&
+                               posY >= AREA.y && posY <= AREA.y + AREA.alto);
+
+            // Dibujo técnico
+            ctx.fillStyle = estaDentro ? "#2ecc71" : "#e74c3c";
+            ctx.fillRect(posX, posY, 10, 10);
         }
 
-        function start(e) {
-            e.preventDefault();
-            dibujando = true;
-            const p = obtenerCoordenadas(e);
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-        }
+        // EVENTOS UNIFICADOS (PC y Celular)
+        canvas.addEventListener('touchstart', validarYDibujar);
+        canvas.addEventListener('touchmove', validarYDibujar);
+        canvas.addEventListener('mousedown', () => canvas.onmousemove = validarYDibujar);
+        window.addEventListener('mouseup', () => canvas.onmousemove = null);
 
-        function move(e) {
-            if (!dibujando) return;
-            e.preventDefault();
-            const p = obtenerCoordenadas(e);
-
-            // VALIDACIÓN DE PRECISIÓN (INGENIERÍA)
-            const dx = p.x - canvas.width/2;
-            const dy = p.y - canvas.height/2;
-            const distancia = Math.sqrt(dx*dx + dy*dy);
-            const estaDentro = Math.abs(distancia - baseFiguras[figuraID].radio) < 25;
-
-            ctx.lineTo(p.x, p.y);
-            ctx.strokeStyle = estaDentro ? "#2ecc71" : "#ff5e57";
-            ctx.lineWidth = 15;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.stroke();
-
-            // Evitar acumulamiento de trazos (Paso Crítico Clase 6)
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-
-            msg.innerText = estaDentro ? "¡EXCELENTE!" : "¡TE SALISTE!";
-            msg.style.color = estaDentro ? "#2ecc71" : "#ff5e57";
-        }
-
-        // COMANDOS DE CONTROL DE ESTADO
-        function limpiar() {
-            redibujarTodo();
-        }
-
-        function siguiente() {
-            figuraID = (figuraID + 1) % baseFiguras.length;
-            redibujarTodo();
-        }
-
-        // EVENTOS DEL SENSOR
-        canvas.addEventListener('touchstart', start, {passive: false});
-        canvas.addEventListener('touchmove', move, {passive: false});
-        window.addEventListener('touchend', () => dibujando = false);
-
-        // SOPORTE PC (Para pruebas rápidas)
-        canvas.addEventListener('mousedown', start);
-        canvas.addEventListener('mousemove', move);
-        window.addEventListener('mouseup', () => dibujando = false);
-
-        inicializarDispositivo();
+        window.onresize = configurar;
+        configurar();
     </script>
 </body>
 </html>
