@@ -38,7 +38,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            backdrop-filter: blur(15px); /* Aquí se hace la magia del fondo borroso */
+            backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             background-color: rgba(255, 255, 255, 0.2);
             z-index: 2;
@@ -47,15 +47,22 @@
             align-items: center;
         }
 
-        /* Caja central elegante */
+        /* Caja central elegante - Efecto Ventana Flotante */
         .mensaje-contenedor {
-            background: rgba(255, 255, 255, 0.4);
+            /* Fondo traslúcido más suave */
+            background: rgba(255, 255, 255, 0.25);
             padding: 50px 100px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-radius: 40px; /* Bordes más redondeados y suaves */
             text-align: center;
             zoom: 130%; /* Escalado Nancy Elegante */
+            
+            /* Eliminamos el borde marcado y aplicamos sombra de ventana flotante */
+            border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            
+            /* Brillo sutil en la parte superior para dar realismo al cristal */
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .texto-grande {
