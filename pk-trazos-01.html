@@ -25,18 +25,17 @@
         .btn-back { background-color: #2196F3; }
         .btn-clear { background-color: #F44336; }
         .btn-next { background-color: #FF9800; }
-        .btn-capture { background-color: #9C27B0; } /* Morado para captura */
+        .btn-capture { background-color: #9C27B0; }
 
         .btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* Logo de la Profe Maxi aumentado 4 tallas */
         .mini-profe { 
             position: absolute; 
             bottom: 15px; 
             right: 15px; 
-            width: 140px; /* Aumentado significativamente */
+            width: 140px; 
             filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
-            pointer-events: none; /* Para que no estorbe al tocar botones */
+            pointer-events: none; 
         }
         
         #nivel-texto { font-weight: bold; color: #3F51B5; margin-bottom: 5px; background: white; padding: 2px 12px; border-radius: 10px; font-size: 0.9rem; }
@@ -44,6 +43,9 @@
 </head>
 <body>
     <div class="bg-overlay"></div>
+    
+    <audio id="musicaFondo" src="Trazos.mp3" loop></audio>
+
     <div id="nivel-texto">Ejercicio 1 de 5</div>
     <div class="header-trazos"><h1>✨ ¡A practicar, campeones! ✨</h1></div>
 
@@ -63,6 +65,7 @@
     <script>
         const canvas = document.getElementById('trazosCanvas');
         const ctx = canvas.getContext('2d');
+        const musica = document.getElementById('musicaFondo');
         let dibujando = false;
         let nivelActual = 1;
 
@@ -91,24 +94,22 @@
             const w = canvas.width;
             const h = canvas.height;
 
-            if (nivel === 1) { // Recta
-                ctx.moveTo(30, h/2); ctx.lineTo(w-30, h/2);
-            } 
-            else if (nivel === 2) { // Dientes de tiburón
+            if (nivel === 1) { ctx.moveTo(30, h/2); ctx.lineTo(w-30, h/2); } 
+            else if (nivel === 2) { 
                 ctx.moveTo(20, h*0.7);
                 for(let x=20; x<w-40; x+=40) { ctx.lineTo(x+20, h*0.3); ctx.lineTo(x+40, h*0.7); }
             } 
-            else if (nivel === 3) { // Línea y Cuadrado
+            else if (nivel === 3) {
                 ctx.moveTo(20, h*0.6);
                 for(let x=20; x<w-80; x+=80) {
                     ctx.lineTo(x+30, h*0.6); ctx.lineTo(x+30, h*0.3); ctx.lineTo(x+60, h*0.3); ctx.lineTo(x+60, h*0.6); ctx.lineTo(x+80, h*0.6);
                 }
             } 
-            else if (nivel === 4) { // Ondas
+            else if (nivel === 4) {
                 ctx.moveTo(20, h/2);
                 for(let x=20; x<w-40; x+=40) { ctx.bezierCurveTo(x+10, h*0.1, x+30, h*0.1, x+40, h/2); ctx.bezierCurveTo(x+50, h*0.9, x+70, h*0.9, x+80, h/2); x+=40; }
             } 
-            else if (nivel === 5) { // Mezcla (Recta + Triángulo)
+            else if (nivel === 5) {
                 ctx.moveTo(20, h*0.6);
                 for(let x=20; x<w-70; x+=70) {
                     ctx.lineTo(x+30, h*0.6); ctx.lineTo(x+45, h*0.3); ctx.lineTo(x+60, h*0.6); ctx.lineTo(x+75, h*0.6);
@@ -118,7 +119,6 @@
             ctx.setLineDash([]);
         }
 
-        // Función para Capturar la Pantalla (Canvas)
         function capturarPantalla() {
             const link = document.createElement('a');
             link.download = `trazo_ejercicio_${nivelActual}.png`;
@@ -132,7 +132,18 @@
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             return { x: clientX - rect.left, y: clientY - rect.top };
         }
-        function iniciar(e) { dibujando = true; const p = obtenerPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+
+        function iniciar(e) { 
+            dibujando = true; 
+            // Iniciar música al primer toque del usuario
+            if (musica.paused) musica.play();
+            
+            const p = obtenerPos(e); 
+            ctx.beginPath(); 
+            ctx.moveTo(p.x, p.y); 
+            e.preventDefault(); 
+        }
+
         function mover(e) { 
             if (!dibujando) return; 
             const p = obtenerPos(e); ctx.lineTo(p.x, p.y); 
@@ -142,6 +153,9 @@
 
         canvas.addEventListener('touchstart', iniciar, {passive: false});
         canvas.addEventListener('touchmove', mover, {passive: false});
+        canvas.addEventListener('mousedown', iniciar);
+        canvas.addEventListener('mousemove', mover);
+        window.addEventListener('mouseup', () => dibujando = false);
         window.addEventListener('touchend', () => dibujando = false);
         window.addEventListener('resize', ajustarCanvas);
         ajustarCanvas();
