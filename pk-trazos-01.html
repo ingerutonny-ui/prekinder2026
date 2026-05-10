@@ -2,163 +2,75 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pre-Kinder 2026 - Trazos 01</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Kinder 2026 - Inicio</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f8ff;
+            background-color: #ffeb3b; /* Amarillo divertido */
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Evita el scroll mientras se dibuja */
+            text-align: center;
         }
 
         h1 {
-            color: #ff4500;
-            font-size: 1.5rem;
+            color: #e91e63;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px white;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 80%;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s;
+            border: 4px solid #4caf50;
+        }
+
+        .card:active {
+            transform: scale(0.9);
+        }
+
+        .card h2 {
             margin: 10px 0;
+            font-size: 1.2rem;
         }
 
-        #canvas-container {
-            position: relative;
-            border: 5px solid #4caf50;
-            border-radius: 15px;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            cursor: crosshair;
-            touch-action: none; /* Crucial para móviles: evita gestos del navegador */
+        .icon {
+            font-size: 3rem;
         }
-
-        canvas {
-            display: block;
-            border-radius: 10px;
-        }
-
-        .controls {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            font-weight: bold;
-        }
-
-        .btn-clear { background-color: #f44336; color: white; }
-        .btn-back { background-color: #2196f3; color: white; text-decoration: none; padding: 12px 25px; display: inline-block; }
-        
-        button:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-    <h1>¡A practicar trazos! ✍️</h1>
+    <h1>🖍️ Mi Jardín Digital 2026</h1>
 
-    <div id="canvas-container">
-        <canvas id="trazosCanvas"></canvas>
+    <div class="menu-container">
+        <a href="pk-trazos-01.html" class="card">
+            <div class="icon">✍️</div>
+            <h2>Practicar Trazos 01</h2>
+        </a>
+
+        <div class="card" style="opacity: 0.5; border-color: #ccc;">
+            <div class="icon">🎨</div>
+            <h2>Colores (Próximamente)</h2>
+        </div>
     </div>
 
-    <div class="controls">
-        <a href="index.html" class="btn-back">Volver</a>
-        <button class="btn-clear" onclick="limpiarCanvas()">Limpiar</button>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('trazosCanvas');
-        const ctx = canvas.getContext('2d');
-        let dibujando = false;
-
-        // Ajustar tamaño del canvas al dispositivo
-        function ajustarCanvas() {
-            const containerWidth = window.innerWidth * 0.9;
-            canvas.width = containerWidth;
-            canvas.height = window.innerHeight * 0.6;
-            
-            // Redibujar fondo (guía de trazos)
-            limpiarCanvas();
-        }
-
-        function limpiarCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            dibujarGuia();
-        }
-
-        function dibujarGuia() {
-            ctx.beginPath();
-            ctx.setLineDash([15, 15]); // Línea punteada
-            ctx.strokeStyle = "#cccccc";
-            ctx.lineWidth = 5;
-            
-            // Ejemplo: Línea horizontal de práctica
-            ctx.moveTo(50, canvas.height / 2);
-            ctx.lineTo(canvas.width - 50, canvas.height / 2);
-            ctx.stroke();
-            
-            ctx.setLineDash([]); // Resetear para el dibujo del niño
-        }
-
-        // --- Lógica de dibujo ---
-
-        function obtenerPosicion(e) {
-            const rect = canvas.getBoundingClientRect();
-            // Soporte para mouse y touch
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
-        }
-
-        function iniciarDibujo(e) {
-            dibujando = true;
-            const pos = obtenerPosicion(e);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-            e.preventDefault(); // Evita scroll al tocar
-        }
-
-        function moverDedo(e) {
-            if (!dibujando) return;
-            const pos = obtenerPosicion(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.strokeStyle = "#4caf50";
-            ctx.lineWidth = 8;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.stroke();
-            e.preventDefault();
-        }
-
-        function detenerDibujo() {
-            dibujando = false;
-        }
-
-        // Eventos de Mouse
-        canvas.addEventListener('mousedown', iniciarDibujo);
-        canvas.addEventListener('mousemove', moverDedo);
-        window.addEventListener('mouseup', detenerDibujo);
-
-        // Eventos de Touch (Celulares)
-        canvas.addEventListener('touchstart', iniciarDibujo, { passive: false });
-        canvas.addEventListener('touchmove', moverDedo, { passive: false });
-        canvas.addEventListener('touchend', detenerDibujo);
-
-        // Inicializar
-        window.addEventListener('resize', ajustarCanvas);
-        ajustarCanvas();
-    </script>
 </body>
 </html>
