@@ -11,35 +11,51 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #ffeb3b; /* Amarillo divertido */
+            min-height: 100vh;
+            /* Aplicamos tu nueva imagen de fondo */
+            background: url('fondo_trazos.jpg') no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Arial', sans-serif;
             text-align: center;
         }
 
+        /* Capa opcional para mejorar la lectura sobre el fondo */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 235, 59, 0.4); /* Amarillo semi-transparente */
+            z-index: -1;
+        }
+
         h1 {
-            color: #e91e63;
-            font-size: 2.5rem;
+            color: #E91E63;
+            font-size: 2.2rem;
+            margin-top: 20px;
             margin-bottom: 30px;
             text-shadow: 2px 2px white;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 50px;
         }
 
         .menu-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 20px;
-            width: 80%;
+            width: 85%;
+            max-width: 450px;
+            margin-bottom: 20px;
         }
 
         .card {
             background: white;
             padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
             text-decoration: none;
             color: #333;
             transition: transform 0.3s;
-            border: 4px solid #4caf50;
+            border: 4px solid #4CAF50;
         }
 
         .card:active {
@@ -48,15 +64,42 @@
 
         .card h2 {
             margin: 10px 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .icon {
             font-size: 3rem;
         }
+
+        /* Estilo para la Profe Maxi */
+        .profe-container {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .img-profe {
+            width: 150px; /* Ajusta según el tamaño de tu imagen */
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+
+        .firma {
+            margin-top: 10px;
+            font-size: 1.4rem;
+            color: #3F51B5;
+            font-weight: bold;
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <div class="overlay"></div>
 
     <h1>🖍️ Mi Jardín Digital 2026</h1>
 
@@ -66,16 +109,16 @@
             <h2>Practicar Trazos 01</h2>
         </a>
 
-        <div class="card" style="opacity: 0.5; border-color: #ccc;">
+        <div class="card" style="opacity: 0.7; border-color: #9E9E9E;">
             <div class="icon">🎨</div>
-            <h2>Colores (Próximamente)</h2>
+            <h2>Colores</h2>
         </div>
     </div>
 
-    <div class="firma">
-        .....La Profe. Maxi.....
+    <div class="profe-container">
+        <img src="profe_maxi.png" alt="Profe Maxi" class="img-profe">
+        <div class="firma">.....La Profe. Maxi.....</div>
     </div>
 
-    
 </body>
 </html>
