@@ -13,22 +13,27 @@
         }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.4); z-index: -1; }
         
-        .header-trazos { background: white; padding: 8px 20px; border-radius: 50px; border: 3px solid #FF4500; margin-bottom: 5px; z-index: 10; }
+        #nivel-texto { font-weight: bold; color: #3F51B5; margin-bottom: 5px; background: white; padding: 2px 12px; border-radius: 10px; font-size: 0.9rem; z-index: 10; margin-top: 100px; }
+        .header-trazos { background: white; padding: 8px 20px; border-radius: 50px; border: 3px solid #FF4500; margin-bottom: 15px; z-index: 10; }
         h1 { color: #FF4500; font-size: 1.1rem; margin: 0; }
 
-        /* Contenedor horizontal superior para las imágenes de apoyo sobre el título */
+        /* Contenedor superior alineado perfectamente con los cuatro cuadrantes de referencia */
         .imagenes-apoyo {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 8px;
-            z-index: 10;
-            min-height: 85px;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 20;
+            height: 90px;
         }
         
         .img-item {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             object-fit: contain;
             background: white;
             border: 3px solid #FF9800;
@@ -36,24 +41,26 @@
             padding: 4px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
             transition: transform 0.3s;
-            display: none;
+            visibility: hidden;
+            opacity: 0;
         }
         
         .img-item.active {
-            display: block;
-            animation: popIn 0.5s ease-out;
+            visibility: visible;
+            opacity: 1;
+            animation: popIn 0.5s ease-out forwards;
         }
 
         @keyframes popIn {
-            0% { transform: scale(0); }
+            0% { transform: scale(0); opacity: 0; }
             80% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        #canvas-container { border: 6px solid #4CAF50; border-radius: 20px; background-color: rgba(255, 255, 255, 0.95); touch-action: none; position: relative; }
+        #canvas-container { border: 6px solid #4CAF50; border-radius: 20px; background-color: rgba(255, 255, 255, 0.95); touch-action: none; position: relative; z-index: 10; }
         canvas { display: block; border-radius: 12px; }
 
-        .controls { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; z-index: 10; }
+        .controls { margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; z-index: 10; }
         .btn { padding: 10px 15px; font-size: 0.85rem; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; text-decoration: none; box-shadow: 0 4px 0px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
         
         .btn-back { background-color: #2196F3; }
@@ -70,17 +77,14 @@
             width: 140px; 
             filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
             pointer-events: none; 
+            z-index: 10;
         }
-        
-        #nivel-texto { font-weight: bold; color: #3F51B5; margin-bottom: 5px; background: white; padding: 2px 12px; border-radius: 10px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
     <div class="bg-overlay"></div>
     
     <audio id="musicaFondo" src="Trazos.mp3" loop></audio>
-
-    <div id="nivel-texto">Ejercicio 1 de 6</div>
 
     <div class="imagenes-apoyo">
         <img id="img-abeja" src="Abeja.png" alt="Abeja" class="img-item">
@@ -89,6 +93,7 @@
         <img id="img-avion" src="Avion.png" alt="Avión" class="img-item">
     </div>
 
+    <div id="nivel-texto">Ejercicio 1 de 6</div>
     <div class="header-trazos"><h1>✨ ¡Bordea la Vocal A con tu dedito! ✨</h1></div>
 
     <div id="canvas-container">
@@ -113,7 +118,7 @@
 
         function ajustarCanvas() {
             canvas.width = window.innerWidth * 0.85;
-            canvas.height = window.innerHeight * 0.45;
+            canvas.height = window.innerHeight * 0.42;
             limpiarCanvas();
         }
 
