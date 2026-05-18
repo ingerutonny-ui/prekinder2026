@@ -81,8 +81,8 @@
         }
 
         function siguienteEjercicio() {
-            nivelActual = nivelActual < 6 ? nivelActual + 1 : 1;
-            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 6`;
+            nivelActual = nivelActual < 4 ? nivelActual + 1 : 1;
+            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 4`;
             limpiarCanvas();
         }
 
@@ -99,7 +99,7 @@
             ctx.setLineDash([10, 10]);
 
             if (nivel === 1) {
-                ctx.strokeText("A", w * 0.35, centerY);
+                ctx.strokeText("A", w * 0.50, centerY);
               
             } 
             else if (nivel === 2) {
@@ -108,7 +108,7 @@
                 ctx.strokeText(" A", w * 0.77, centerY);
             } 
            else if (nivel === 3) {
-                ctx.strokeText("a", w * 0.35, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.50, centerY + (h * 0.05));
                 
             } 
             else if (nivel === 4) {
