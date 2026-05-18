@@ -86,86 +86,56 @@
             limpiarCanvas();
         }
 
-        function dibujarMayuscula(x, y, h) {
-            const topY = y - h * 0.35;
-            const bottomY = y + h * 0.35;
-            const anchoBase = h * 0.5;
-
-            // Diagonal izquierda
-            ctx.moveTo(x, topY);
-            ctx.lineTo(x - anchoBase / 2, bottomY);
-            
-            // Diagonal derecha
-            ctx.moveTo(x, topY);
-            ctx.lineTo(x + anchoBase / 2, bottomY);
-            
-            // Horizontal central
-            ctx.moveTo(x - anchoBase * 0.25, y + h * 0.05);
-            ctx.lineTo(x + anchoBase * 0.25, y + h * 0.05);
-        }
-
-        function dibujarMinuscula(x, y, h) {
-            const radioX = h * 0.2;
-            const radioY = h * 0.2;
-            const centroX = x - radioX * 0.2;
-
-            // Círculo de la 'a'
-            ctx.moveTo(centroX + radioX, y);
-            ctx.arc(centroX, y, radioY, 0, Math.PI * 2);
-            
-            // Palito derecho de la 'a'
-            ctx.moveTo(centroX + radioX, y - radioY);
-            ctx.lineTo(centroX + radioX, y + radioY);
-        }
-
         function dibujarGuia(nivel) {
-            ctx.beginPath();
-            ctx.setLineDash([10, 10]);
-            ctx.strokeStyle = "#BDBDBD";
-            ctx.lineWidth = 6;
-            
             const w = canvas.width;
             const h = canvas.height;
             const centerY = h / 2;
 
+            // Configuración del texto en el canvas para usar la fuente Arial nativa
+            ctx.font = `bold ${h * 0.65}px Arial`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.strokeStyle = "#BDBDBD";
+            ctx.lineWidth = 4;
+            ctx.setLineDash([10, 10]);
+
             if (nivel === 1) {
                 // 2 letras Mayúsculas "A A"
-                dibujarMayuscula(w * 0.35, centerY, h);
-                dibujarMayuscula(w * 0.65, centerY, h);
+                ctx.strokeText("A", w * 0.35, centerY);
+                ctx.strokeText("A", w * 0.65, centerY);
             } 
             else if (nivel === 2) {
                 // 3 letras Mayúsculas "A A A"
-                dibujarMayuscula(w * 0.23, centerY, h);
-                dibujarMayuscula(w * 0.50, centerY, h);
-                dibujarMayuscula(w * 0.77, centerY, h);
+                ctx.strokeText("A", w * 0.23, centerY);
+                ctx.strokeText("A", w * 0.50, centerY);
+                ctx.strokeText("A", w * 0.77, centerY);
             } 
             else if (nivel === 3) {
                 // 4 letras Mayúsculas "A A A A"
-                dibujarMayuscula(w * 0.18, centerY, h);
-                dibujarMayuscula(w * 0.39, centerY, h);
-                dibujarMayuscula(w * 0.61, centerY, h);
-                dibujarMayuscula(w * 0.82, centerY, h);
+                ctx.strokeText("A", w * 0.18, centerY);
+                ctx.strokeText("A", w * 0.39, centerY);
+                ctx.strokeText("A", w * 0.61, centerY);
+                ctx.strokeText("A", w * 0.82, centerY);
             } 
             else if (nivel === 4) {
                 // 2 letras Minúsculas "a a"
-                dibujarMinuscula(w * 0.35, centerY, h);
-                dibujarMinuscula(w * 0.65, centerY, h);
+                ctx.strokeText("a", w * 0.35, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.65, centerY + (h * 0.05));
             } 
             else if (nivel === 5) {
                 // 3 letras Minúsculas "a a a"
-                dibujarMinuscula(w * 0.23, centerY, h);
-                dibujarMinuscula(w * 0.50, centerY, h);
-                dibujarMinuscula(w * 0.77, centerY, h);
+                ctx.strokeText("a", w * 0.23, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.50, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.77, centerY + (h * 0.05));
             } 
             else if (nivel === 6) {
                 // 4 letras Minúsculas "a a a a"
-                dibujarMinuscula(w * 0.18, centerY, h);
-                dibujarMinuscula(w * 0.39, centerY, h);
-                dibujarMinuscula(w * 0.61, centerY, h);
-                dibujarMinuscula(w * 0.82, centerY, h);
+                ctx.strokeText("a", w * 0.18, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.39, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.61, centerY + (h * 0.05));
+                ctx.strokeText("a", w * 0.82, centerY + (h * 0.05));
             }
             
-            ctx.stroke();
             ctx.setLineDash([]);
         }
 
