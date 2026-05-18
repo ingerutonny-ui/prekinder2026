@@ -44,9 +44,9 @@
 <body>
     <div class="bg-overlay"></div>
     
-    <audio id="musicaFondo" src="a.mp3" loop></audio>
+    <audio id="musicaFondo" src="Trazos.mp3" loop></audio>
 
-    <div id="nivel-texto">Ejercicio 1 de 2</div>
+    <div id="nivel-texto">Ejercicio 1 de 6</div>
     <div class="header-trazos"><h1>✨ ¡Bordea la Vocal A con tu dedito! ✨</h1></div>
 
     <div id="canvas-container">
@@ -81,9 +81,41 @@
         }
 
         function siguienteEjercicio() {
-            nivelActual = nivelActual < 2 ? nivelActual + 1 : 1;
-            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 2`;
+            nivelActual = nivelActual < 6 ? nivelActual + 1 : 1;
+            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 6`;
             limpiarCanvas();
+        }
+
+        function dibujarMayuscula(x, y, h) {
+            const topY = y - h * 0.35;
+            const bottomY = y + h * 0.35;
+            const anchoBase = h * 0.5;
+
+            // Diagonal izquierda
+            ctx.moveTo(x, topY);
+            ctx.lineTo(x - anchoBase / 2, bottomY);
+            
+            // Diagonal derecha
+            ctx.moveTo(x, topY);
+            ctx.lineTo(x + anchoBase / 2, bottomY);
+            
+            // Horizontal central
+            ctx.moveTo(x - anchoBase * 0.25, y + h * 0.05);
+            ctx.lineTo(x + anchoBase * 0.25, y + h * 0.05);
+        }
+
+        function dibujarMinuscula(x, y, h) {
+            const radioX = h * 0.2;
+            const radioY = h * 0.2;
+            const centroX = x - radioX * 0.2;
+
+            // Círculo de la 'a'
+            ctx.moveTo(centroX + radioX, y);
+            ctx.arc(centroX, y, radioY, 0, Math.PI * 2);
+            
+            // Palito derecho de la 'a'
+            ctx.moveTo(centroX + radioX, y - radioY);
+            ctx.lineTo(centroX + radioX, y + radioY);
         }
 
         function dibujarGuia(nivel) {
@@ -91,42 +123,48 @@
             ctx.setLineDash([10, 10]);
             ctx.strokeStyle = "#BDBDBD";
             ctx.lineWidth = 6;
+            
             const w = canvas.width;
             const h = canvas.height;
+            const centerY = h / 2;
 
-            if (nivel === 1) { 
-                // Vocal 'A' Mayúscula centrada y proporcionada al canvas
-                const centroX = w / 2;
-                const topY = h * 0.15;
-                const bottomY = h * 0.85;
-                const anchoBase = h * 0.5; // Mantiene la proporción de la letra libre del ancho total
-
-                // Línea diagonal izquierda
-                ctx.moveTo(centroX, topY); 
-                ctx.lineTo(centroX - anchoBase / 2, bottomY);
-                
-                // Línea diagonal derecha
-                ctx.moveTo(centroX, topY); 
-                ctx.lineTo(centroX + anchoBase / 2, bottomY);
-                
-                // Línea horizontal central
-                ctx.moveTo(centroX - anchoBase * 0.25, h * 0.55); 
-                ctx.lineTo(centroX + anchoBase * 0.25, h * 0.55);
+            if (nivel === 1) {
+                // 2 letras Mayúsculas "A A"
+                dibujarMayuscula(w * 0.35, centerY, h);
+                dibujarMayuscula(w * 0.65, centerY, h);
             } 
-            else if (nivel === 2) { 
-                // Vocal 'a' Minúscula centrada y proporcionada
-                const centroX = w / 2;
-                const radioX = h * 0.25;
-                const radioY = h * 0.25;
-                const posY = h * 0.55;
-
-                // Círculo de la 'a'
-                ctx.arc(centroX - radioX * 0.2, posY, radioY, 0, Math.PI * 2);
-                
-                // Palito derecho de la 'a'
-                ctx.moveTo(centroX - radioX * 0.2 + radioX, posY - radioY);
-                ctx.lineTo(centroX - radioX * 0.2 + radioX, posY + radioY);
+            else if (nivel === 2) {
+                // 3 letras Mayúsculas "A A A"
+                dibujarMayuscula(w * 0.23, centerY, h);
+                dibujarMayuscula(w * 0.50, centerY, h);
+                dibujarMayuscula(w * 0.77, centerY, h);
+            } 
+            else if (nivel === 3) {
+                // 4 letras Mayúsculas "A A A A"
+                dibujarMayuscula(w * 0.18, centerY, h);
+                dibujarMayuscula(w * 0.39, centerY, h);
+                dibujarMayuscula(w * 0.61, centerY, h);
+                dibujarMayuscula(w * 0.82, centerY, h);
+            } 
+            else if (nivel === 4) {
+                // 2 letras Minúsculas "a a"
+                dibujarMinuscula(w * 0.35, centerY, h);
+                dibujarMinuscula(w * 0.65, centerY, h);
+            } 
+            else if (nivel === 5) {
+                // 3 letras Minúsculas "a a a"
+                dibujarMinuscula(w * 0.23, centerY, h);
+                dibujarMinuscula(w * 0.50, centerY, h);
+                dibujarMinuscula(w * 0.77, centerY, h);
+            } 
+            else if (nivel === 6) {
+                // 4 letras Minúsculas "a a a a"
+                dibujarMinuscula(w * 0.18, centerY, h);
+                dibujarMinuscula(w * 0.39, centerY, h);
+                dibujarMinuscula(w * 0.61, centerY, h);
+                dibujarMinuscula(w * 0.82, centerY, h);
             }
+            
             ctx.stroke();
             ctx.setLineDash([]);
         }
