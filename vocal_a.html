@@ -100,34 +100,23 @@
 
             if (nivel === 1) {
                 ctx.strokeText("A", w * 0.35, centerY);
-                ctx.strokeText(" A", w * 0.65, centerY);
+              
             } 
             else if (nivel === 2) {
-                ctx.strokeText("A", w * 0.23, centerY);
-                ctx.strokeText(" A", w * 0.50, centerY);
+                ctx.strokeText("A ", w * 0.23, centerY);
+                
                 ctx.strokeText(" A", w * 0.77, centerY);
             } 
-            else if (nivel === 3) {
-                ctx.strokeText("A", w * 0.18, centerY);
-                ctx.strokeText("A", w * 0.39, centerY);
-                ctx.strokeText("A", w * 0.61, centerY);
-                ctx.strokeText("A", w * 0.82, centerY);
+           else if (nivel === 3) {
+                ctx.strokeText("a", w * 0.35, centerY + (h * 0.05));
+                
             } 
             else if (nivel === 4) {
-                ctx.strokeText("a", w * 0.35, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.65, centerY + (h * 0.05));
-            } 
-            else if (nivel === 5) {
                 ctx.strokeText("a", w * 0.23, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.50, centerY + (h * 0.05));
+               
                 ctx.strokeText("a", w * 0.77, centerY + (h * 0.05));
             } 
-            else if (nivel === 6) {
-                ctx.strokeText("a", w * 0.18, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.39, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.61, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.82, centerY + (h * 0.05));
-            }
+        
             
             ctx.setLineDash([]);
         }
