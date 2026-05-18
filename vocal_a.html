@@ -17,46 +17,6 @@
         .header-trazos { background: white; padding: 8px 20px; border-radius: 50px; border: 3px solid #FF4500; margin-bottom: 15px; z-index: 10; }
         h1 { color: #FF4500; font-size: 1.1rem; margin: 0; }
 
-        /* Contenedor superior alineado perfectamente con los cuatro cuadrantes de referencia */
-        .imagenes-apoyo {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 20;
-            height: 90px;
-        }
-        
-        .img-item {
-            width: 85px;
-            height: 85px;
-            object-fit: contain;
-            background: white;
-            border: 3px solid #FF9800;
-            border-radius: 15px;
-            padding: 4px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            transition: transform 0.3s;
-            visibility: hidden;
-            opacity: 0;
-        }
-        
-        .img-item.active {
-            visibility: visible;
-            opacity: 1;
-            animation: popIn 0.5s ease-out forwards;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            80% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
         #canvas-container { border: 6px solid #4CAF50; border-radius: 20px; background-color: rgba(255, 255, 255, 0.95); touch-action: none; position: relative; z-index: 10; }
         canvas { display: block; border-radius: 12px; }
 
@@ -85,13 +45,6 @@
     <div class="bg-overlay"></div>
     
     <audio id="musicaFondo" src="Trazos.mp3" loop></audio>
-
-    <div class="imagenes-apoyo">
-        <img id="img-abeja" src="Abeja.png" alt="Abeja" class="img-item">
-        <img id="img-ardilla" src="Ardilla.png" alt="Ardilla" class="img-item">
-        <img id="img-aro" src="Aro.png" alt="Aro" class="img-item">
-        <img id="img-avion" src="Avion.png" alt="Avión" class="img-item">
-    </div>
 
     <div id="nivel-texto">Ejercicio 1 de 6</div>
     <div class="header-trazos"><h1>✨ ¡Bordea la Vocal A con tu dedito! ✨</h1></div>
@@ -125,48 +78,12 @@
         function limpiarCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             dibujarGuia(nivelActual);
-            actualizarImagenesApoyo(nivelActual);
         }
 
         function siguienteEjercicio() {
             nivelActual = nivelActual < 6 ? nivelActual + 1 : 1;
             document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 6`;
             limpiarCanvas();
-        }
-
-        function actualizarImagenesApoyo(nivel) {
-            document.querySelectorAll('.img-item').forEach(img => img.classList.remove('active'));
-
-            if (nivel === 1) {
-                document.getElementById('img-abeja').classList.add('active');
-                document.getElementById('img-avion').classList.add('active');
-            } 
-            else if (nivel === 2) {
-                document.getElementById('img-ardilla').classList.add('active');
-                document.getElementById('img-aro').classList.add('active');
-                document.getElementById('img-avion').classList.add('active');
-            } 
-            else if (nivel === 3) {
-                document.getElementById('img-abeja').classList.add('active');
-                document.getElementById('img-ardilla').classList.add('active');
-                document.getElementById('img-aro').classList.add('active');
-                document.getElementById('img-avion').classList.add('active');
-            } 
-            else if (nivel === 4) {
-                document.getElementById('img-ardilla').classList.add('active');
-                document.getElementById('img-abeja').classList.add('active');
-            } 
-            else if (nivel === 5) {
-                document.getElementById('img-abeja').classList.add('active');
-                document.getElementById('img-aro').classList.add('active');
-                document.getElementById('img-ardilla').classList.add('active');
-            } 
-            else if (nivel === 6) {
-                document.getElementById('img-avion').classList.add('active');
-                document.getElementById('img-aro').classList.add('active');
-                document.getElementById('img-ardilla').classList.add('active');
-                document.getElementById('img-abeja').classList.add('active');
-            }
         }
 
         function dibujarGuia(nivel) {
@@ -203,57 +120,4 @@
             else if (nivel === 5) {
                 ctx.strokeText("a", w * 0.23, centerY + (h * 0.05));
                 ctx.strokeText("a", w * 0.50, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.77, centerY + (h * 0.05));
-            } 
-            else if (nivel === 6) {
-                ctx.strokeText("a", w * 0.18, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.39, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.61, centerY + (h * 0.05));
-                ctx.strokeText("a", w * 0.82, centerY + (h * 0.05));
-            }
-            
-            ctx.setLineDash([]);
-        }
-
-        function capturarPantalla() {
-            const link = document.createElement('a');
-            link.download = `vocal_a_ejercicio_${nivelActual}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-        }
-
-        function obtenerPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
-        }
-
-        function iniciar(e) { 
-            dibujando = true; 
-            if (musica.paused) musica.play();
-            
-            const p = obtenerPos(e); 
-            ctx.beginPath(); 
-            ctx.moveTo(p.x, p.y); 
-            e.preventDefault(); 
-        }
-
-        function mover(e) { 
-            if (!dibujando) return; 
-            const p = obtenerPos(e); ctx.lineTo(p.x, p.y); 
-            ctx.strokeStyle = "#4CAF50"; ctx.lineWidth = 10; ctx.lineCap = "round"; ctx.stroke(); 
-            e.preventDefault(); 
-        }
-
-        canvas.addEventListener('touchstart', iniciar, {passive: false});
-        canvas.addEventListener('touchmove', mover, {passive: false});
-        canvas.addEventListener('mousedown', iniciar);
-        canvas.addEventListener('mousemove', mover);
-        window.addEventListener('mouseup', () => dibujando = false);
-        window.addEventListener('touchend', () => dibujando = false);
-        window.addEventListener('resize', ajustarCanvas);
-        ajustarCanvas();
-    </script>
-</body>
-</html>
+                ctx.strokeText("a", w * 0.77, centerY + (h * 0
