@@ -8,7 +8,7 @@
         body {
             margin: 0; padding: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; height: 100vh;
-            background: url('fondo_a.png') no-repeat center center fixed;
+            background: url('fondo_e.png') no-repeat center center fixed;
             background-size: cover; font-family: 'Arial', sans-serif; overflow: hidden;
         }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.4); z-index: -1; }
@@ -86,34 +86,72 @@
             limpiarCanvas();
         }
 
+        function dibujarPuntosE_Mayuscula(x, y, scale) {
+            ctx.fillStyle = "#BDBDBD";
+            
+            // Línea vertical izquierda
+            for (let i = 0; i <= 10; i++) {
+                let py = y + (i * (scale * 0.1));
+                ctx.beginPath(); ctx.arc(x, py, 5, 0, Math.PI * 2); ctx.fill();
+            }
+            // Línea horizontal superior
+            for (let i = 1; i <= 5; i++) {
+                let px = x + (i * (scale * 0.1));
+                ctx.beginPath(); ctx.arc(px, y, 5, 0, Math.PI * 2); ctx.fill();
+            }
+            // Línea horizontal del medio
+            for (let i = 1; i <= 4; i++) {
+                let px = x + (i * (scale * 0.1));
+                ctx.beginPath(); ctx.arc(px, y + (scale * 0.5), 5, 0, Math.PI * 2); ctx.fill();
+            }
+            // Línea horizontal inferior
+            for (let i = 1; i <= 5; i++) {
+                let px = x + (i * (scale * 0.1));
+                ctx.beginPath(); ctx.arc(px, y + scale, 5, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function dibujarPuntosE_Minuscula(cx, cy, radius) {
+            ctx.fillStyle = "#BDBDBD";
+            
+            // Línea horizontal interna de la 'e'
+            for (let i = 0; i <= 4; i++) {
+                let px = (cx - radius) + (i * (radius * 0.4));
+                ctx.beginPath(); ctx.arc(px, cy, 5, 0, Math.PI * 2); ctx.fill();
+            }
+            
+            // Arco curvo continuo (espiral/curva de la e)
+            // Desde ángulo 0 hasta aproximadamente 1.6 * PI para dejar la apertura inferior derecha
+            let pasos = 16;
+            for (let i = 0; i <= pasos; i++) {
+                let angulo = - i * (Math.PI * 1.7 / pasos);
+                let px = cx + radius * Math.cos(angulo);
+                let py = cy + radius * Math.sin(angulo);
+                ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
         function dibujarGuia(nivel) {
             const w = canvas.width;
             const h = canvas.height;
+            const size = h * 0.65;
+            const topY = (h - size) / 2;
             const centerY = h / 2;
 
-            ctx.font = `bold ${h * 0.75}px Arial`;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.strokeStyle = "#BDBDBD";
-            ctx.lineWidth = 4;
-            ctx.setLineDash([10, 10]);
-
             if (nivel === 1) {
-                ctx.strokeText("E", w * 0.50, centerY);
+                dibujarPuntosE_Mayuscula(w * 0.42, topY, size);
             } 
             else if (nivel === 2) {
-                ctx.strokeText("E", w * 0.25, centerY);
-                ctx.strokeText("E", w * 0.75, centerY);
+                dibujarPuntosE_Mayuscula(w * 0.20, topY, size);
+                dibujarPuntosE_Mayuscula(w * 0.65, topY, size);
             } 
             else if (nivel === 3) {
-                ctx.strokeText("e", w * 0.50, centerY + (h * 0.02));
+                dibujarPuntosE_Minuscula(w * 0.50, centerY + (h * 0.05), size * 0.45);
             } 
             else if (nivel === 4) {
-                ctx.strokeText("e", w * 0.25, centerY + (h * 0.02));
-                ctx.strokeText("e", w * 0.75, centerY + (h * 0.02));
-            } 
-        
-            ctx.setLineDash([]);
+                dibujarPuntosE_Minuscula(w * 0.28, centerY + (h * 0.05), size * 0.45);
+                dibujarPuntosE_Minuscula(w * 0.72, centerY + (h * 0.05), size * 0.45);
+            }
         }
 
         function capturarPantalla() {
