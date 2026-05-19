@@ -43,7 +43,7 @@
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 20px;
             width: 85%;
-            max-width: 450px;
+            max-width: 550px;
             margin-bottom: 20px;
         }
 
@@ -95,6 +95,20 @@
             padding: 5px 15px;
             border-radius: 20px;
         }
+
+        /* Estilo específico para tarjetas deshabilitadas o pendientes */
+        .card.disabled {
+            opacity: 0.7;
+            border-color: #9E9E9E;
+            cursor: not-allowed;
+        }
+        .card.disabled h2 span {
+            display: block;
+            font-size: 0.85rem;
+            color: #757575;
+            font-weight: normal;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
@@ -112,6 +126,11 @@
         <a href="vocal_a.html" class="card">
             <div class="icon">🅰️</div>
             <h2>Vocal A</h2>
+        </a>
+
+        <a href="#" class="card disabled" onclick="return false;">
+            <div class="icon">🇪</div>
+            <h2>Vocal E <span>Próximamente</span></h2>
         </a>
     </div>
 
