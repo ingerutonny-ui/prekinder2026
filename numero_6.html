@@ -92,7 +92,7 @@
         }
 
         function siguienteEjercicio() {
-            nivelActual = nivelActual < 3 ? nivelActual + 1 : 1;
+            nivelActual = nivelActual < 2 ? nivelActual + 1 : 1;
             document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 4`;
             limpiarCanvas();
         }
@@ -118,13 +118,7 @@
             else if (nivel === 2) {
                 dibujarTextoPunteado("6", w * 0.32, centerY, h * 0.75);
                 dibujarTextoPunteado("6", w * 0.68, centerY, h * 0.75);
-            } 
-            else if (nivel === 3) {
-                dibujarTextoPunteado("6", w * 0.20, centerY, h * 0.55);
-                dibujarTextoPunteado("6", w * 0.40, centerY, h * 0.55);
-                dibujarTextoPunteado("6", w * 0.60, centerY, h * 0.55);
-               
-            }
+         
         }
 
         function capturarPantalla() {
