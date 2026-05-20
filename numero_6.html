@@ -57,7 +57,7 @@
     
     <audio id="musicaFondo" src="numero_6.mp3" loop></audio>
 
-    <div id="nivel-texto">Ejercicio 1 de 4</div>
+    <div id="nivel-texto">Ejercicio 1 de 2</div>
     <div class="header-trazos"><h1>✨ ¡Bordea el Número 6 con tu dedito! ✨</h1></div>
 
     <div id="canvas-container">
@@ -92,7 +92,7 @@
         }
 
         function siguienteEjercicio() {
-            nivelActual = nivelActual < 3 ? nivelActual + 1 : 1;
+            nivelActual = nivelActual < 2 ? nivelActual + 1 : 1;
             document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 4`;
             limpiarCanvas();
         }
