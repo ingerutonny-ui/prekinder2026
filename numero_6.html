@@ -89,31 +89,29 @@
         function dibujarPuntosNumero6(cx, cy, radius) {
             ctx.fillStyle = "#BDBDBD";
             
-            // 1. Curva superior descendente (cola del 6)
-            // Empieza en la esquina superior derecha del trazo (aprox -45 grados o -0.25*PI)
-            // y baja curvándose hacia el lado izquierdo.
-            let pasosCola = 12;
-            let startAngle = -Math.PI * 0.25;
-            let endAngle = Math.PI * 1.0; 
+            // 1. Curva superior que baja desde la derecha hacia la izquierda (Cola del 6)
+            let pasosCola = 15;
             for (let i = 0; i <= pasosCola; i++) {
                 let t = i / pasosCola;
-                let angulo = startAngle + t * (endAngle - startAngle);
+                // Ángulo que va desde el extremo superior derecho hasta el inicio de la panza
+                let angulo = (-Math.PI * 0.2) + t * (Math.PI * 1.2); 
                 
-                // Desplazamos dinámicamente el centro X y Y para estirar la cola hacia arriba
-                let factorEstirado = (1 - t) * (radius * 0.5);
-                let px = cx + radius * Math.cos(angulo) + factorEstirado;
-                let py = cy + radius * Math.sin(angulo) - factorEstirado;
+                // Efecto de espiral/estirado hacia arriba reduciendo el radio conforme sube
+                let rDinamico = radius * (0.6 + (1 - t) * 0.4);
+                let px = cx + rDinamico * Math.cos(angulo);
+                let py = cy - (radius * 0.4) + rDinamico * Math.sin(angulo);
                 
                 ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
             }
             
-            // 2. Bucle circular inferior (la panza del 6)
-            // Un círculo completo bien definido abajo
-            let pasosPanza = 16;
+            // 2. Círculo inferior perfectamente centrado (Panza del 6)
+            let pasosPanza = 18;
+            let radioPanza = radius * 0.55;
+            let centroPanzaY = cy + (radius * 0.35);
             for (let i = 0; i <= pasosPanza; i++) {
                 let angulo = i * (Math.PI * 2 / pasosPanza);
-                let px = cx + radius * 0.55 * Math.cos(angulo);
-                let py = cy + (radius * 0.35) + radius * 0.55 * Math.sin(angulo);
+                let px = cx + radioPanza * Math.cos(angulo);
+                let py = centroPanzaY + radioPanza * Math.sin(angulo);
                 
                 ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
             }
@@ -133,11 +131,9 @@
                 dibujarPuntosNumero6(w * 0.70, centerY, size);
             } 
             else if (nivel === 3) {
-                // Versión un poco más pequeña
                 dibujarPuntosNumero6(w * 0.50, centerY, size * 0.8);
             } 
             else if (nivel === 4) {
-                // Tres números 6 pequeños distribuidos
                 dibujarPuntosNumero6(w * 0.23, centerY, size * 0.7);
                 dibujarPuntosNumero6(w * 0.50, centerY, size * 0.7);
                 dibujarPuntosNumero6(w * 0.77, centerY, size * 0.7);
