@@ -51,6 +51,8 @@
     </style>
 </head>
 <body>
+    <div style="font-family: 'DotPreschool'; position: absolute; visibility: hidden; height: 0; width: 0;">6</div>
+
     <div class="bg-overlay"></div>
     
     <audio id="musicaFondo" src="numero_6.mp3" loop></audio>
@@ -81,11 +83,7 @@
         function ajustarCanvas() {
             canvas.width = window.innerWidth * 0.85;
             canvas.height = window.innerHeight * 0.42;
-            
-            // Un pequeño truco para asegurar que la fuente se cargue en el canvas antes de dibujar
-            document.fonts.ready.then(() => {
-                limpiarCanvas();
-            });
+            limpiarCanvas();
         }
 
         function limpiarCanvas() {
@@ -112,23 +110,19 @@
         function dibujarGuia(nivel) {
             const w = canvas.width;
             const h = canvas.height;
-            const centerY = h * 0.52; // Centrado vertical fino para el texto del canvas
+            const centerY = h * 0.52; 
 
             if (nivel === 1) {
-                // Un solo número 6 grande
                 dibujarTextoPunteado("6", w * 0.50, centerY, h * 0.85);
             } 
             else if (nivel === 2) {
-                // Dos números 6 medianos
                 dibujarTextoPunteado("6", w * 0.32, centerY, h * 0.75);
                 dibujarTextoPunteado("6", w * 0.68, centerY, h * 0.75);
             } 
             else if (nivel === 3) {
-                // Un número 6 mediano
                 dibujarTextoPunteado("6", w * 0.50, centerY, h * 0.65);
             } 
             else if (nivel === 4) {
-                // Cuatro números 6 pequeños alineados perfectamente
                 dibujarTextoPunteado("6", w * 0.20, centerY, h * 0.55);
                 dibujarTextoPunteado("6", w * 0.40, centerY, h * 0.55);
                 dibujarTextoPunteado("6", w * 0.60, centerY, h * 0.55);
@@ -174,7 +168,15 @@
         window.addEventListener('mouseup', () => dibujando = false);
         window.addEventListener('touchend', () => dibujando = false);
         window.addEventListener('resize', ajustarCanvas);
-        ajustarCanvas();
+
+        // Controlamos la carga asíncrona de la fuente de manera segura antes del dibujo inicial
+        if (document.fonts) {
+            document.fonts.ready.then(function() {
+                ajustarCanvas();
+            });
+        } else {
+            window.addEventListener('load', ajustarCanvas);
+        }
     </script>
 </body>
 </html>
