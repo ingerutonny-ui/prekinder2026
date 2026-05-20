@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pre-Kinder 2026 - Número 6</title>
     <style>
+        /* Cargamos tu fuente tipográfica formalmente */
+        @font-face {
+            font-family: 'DotPreschool';
+            src: url('DotPreschool.otf') format('opentype'),
+                 url('DotPreschool.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             margin: 0; padding: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; height: 100vh;
@@ -72,7 +81,11 @@
         function ajustarCanvas() {
             canvas.width = window.innerWidth * 0.85;
             canvas.height = window.innerHeight * 0.42;
-            limpiarCanvas();
+            
+            // Un pequeño truco para asegurar que la fuente se cargue en el canvas antes de dibujar
+            document.fonts.ready.then(() => {
+                limpiarCanvas();
+            });
         }
 
         function limpiarCanvas() {
@@ -86,57 +99,40 @@
             limpiarCanvas();
         }
 
-        function dibujarPuntosNumero6(cx, cy, radius) {
+        function dibujarTextoPunteado(texto, x, y, tamaño) {
+            ctx.save();
+            ctx.font = `${tamaño}px 'DotPreschool'`;
             ctx.fillStyle = "#BDBDBD";
-            
-            // 1. Curva superior que baja desde la derecha hacia la izquierda (Cola del 6)
-            let pasosCola = 15;
-            for (let i = 0; i <= pasosCola; i++) {
-                let t = i / pasosCola;
-                // Ángulo que va desde el extremo superior derecho hasta el inicio de la panza
-                let angulo = (-Math.PI * 0.2) + t * (Math.PI * 1.2); 
-                
-                // Efecto de espiral/estirado hacia arriba reduciendo el radio conforme sube
-                let rDinamico = radius * (0.6 + (1 - t) * 0.4);
-                let px = cx + rDinamico * Math.cos(angulo);
-                let py = cy - (radius * 0.4) + rDinamico * Math.sin(angulo);
-                
-                ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
-            }
-            
-            // 2. Círculo inferior perfectamente centrado (Panza del 6)
-            let pasosPanza = 18;
-            let radioPanza = radius * 0.55;
-            let centroPanzaY = cy + (radius * 0.35);
-            for (let i = 0; i <= pasosPanza; i++) {
-                let angulo = i * (Math.PI * 2 / pasosPanza);
-                let px = cx + radioPanza * Math.cos(angulo);
-                let py = centroPanzaY + radioPanza * Math.sin(angulo);
-                
-                ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
-            }
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(texto, x, y);
+            ctx.restore();
         }
 
         function dibujarGuia(nivel) {
             const w = canvas.width;
             const h = canvas.height;
-            const size = h * 0.45; 
-            const centerY = h * 0.45;
+            const centerY = h * 0.52; // Centrado vertical fino para el texto del canvas
 
             if (nivel === 1) {
-                dibujarPuntosNumero6(w * 0.50, centerY, size);
+                // Un solo número 6 grande
+                dibujarTextoPunteado("6", w * 0.50, centerY, h * 0.85);
             } 
             else if (nivel === 2) {
-                dibujarPuntosNumero6(w * 0.30, centerY, size);
-                dibujarPuntosNumero6(w * 0.70, centerY, size);
+                // Dos números 6 medianos
+                dibujarTextoPunteado("6", w * 0.32, centerY, h * 0.75);
+                dibujarTextoPunteado("6", w * 0.68, centerY, h * 0.75);
             } 
             else if (nivel === 3) {
-                dibujarPuntosNumero6(w * 0.50, centerY, size * 0.8);
+                // Un número 6 mediano
+                dibujarTextoPunteado("6", w * 0.50, centerY, h * 0.65);
             } 
             else if (nivel === 4) {
-                dibujarPuntosNumero6(w * 0.23, centerY, size * 0.7);
-                dibujarPuntosNumero6(w * 0.50, centerY, size * 0.7);
-                dibujarPuntosNumero6(w * 0.77, centerY, size * 0.7);
+                // Cuatro números 6 pequeños alineados perfectamente
+                dibujarTextoPunteado("6", w * 0.20, centerY, h * 0.55);
+                dibujarTextoPunteado("6", w * 0.40, centerY, h * 0.55);
+                dibujarTextoPunteado("6", w * 0.60, centerY, h * 0.55);
+                dibujarTextoPunteado("6", w * 0.80, centerY, h * 0.55);
             }
         }
 
