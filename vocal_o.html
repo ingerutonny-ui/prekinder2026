@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pre-Kinder 2026 - Vocal O</title>
+    <style>
+        body {
+            margin: 0; padding: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; height: 100vh;
+            background: url('fondo_o.png') no-repeat center center fixed;
+            background-size: cover; font-family: 'Arial', sans-serif; overflow: hidden;
+        }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.4); z-index: -1; }
+        
+        #nivel-texto { font-weight: bold; color: #3F51B5; margin-bottom: 5px; background: white; padding: 2px 12px; border-radius: 10px; font-size: 0.9rem; z-index: 10; margin-top: 100px; }
+        .header-trazos { background: white; padding: 8px 20px; border-radius: 50px; border: 3px solid #FF4500; margin-bottom: 15px; z-index: 10; }
+        h1 { color: #FF4500; font-size: 1.1rem; margin: 0; }
+
+        #canvas-container { border: 6px solid #4CAF50; border-radius: 20px; background-color: rgba(255, 255, 255, 0.95); touch-action: none; position: relative; z-index: 10; }
+        canvas { display: block; border-radius: 12px; }
+
+        .controls { margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; z-index: 10; }
+        .btn { padding: 10px 15px; font-size: 0.85rem; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; text-decoration: none; box-shadow: 0 4px 0px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
+        
+        .btn-back { background-color: #2196F3; }
+        .btn-clear { background-color: #F44336; }
+        .btn-next { background-color: #FF9800; }
+        .btn-capture { background-color: #9C27B0; }
+
+        .btn:active { transform: translateY(4px); box-shadow: none; }
+
+        .mini-profe { 
+            position: absolute; 
+            bottom: 15px; 
+            right: 15px; 
+            width: 140px; 
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+            pointer-events: none; 
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+    
+    <audio id="musicaFondo" src="o.mp3" loop></audio>
+
+    <div id="nivel-texto">Ejercicio 1 de 4</div>
+    <div class="header-trazos"><h1>✨ ¡Bordea la Vocal O con tu dedito! ✨</h1></div>
+
+    <div id="canvas-container">
+        <canvas id="trazosCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <a href="index.html" class="btn btn-back">⬅ Volver</a>
+        <button class="btn btn-clear" onclick="limpiarCanvas()">🗑️ Limpiar</button>
+        <button class="btn btn-next" onclick="siguienteEjercicio()">⭐ SIGUIENTE</button>
+        <button class="btn btn-capture" onclick="capturarPantalla()">📸 CAPTURAR</button>
+    </div>
+
+    <img src="profe_maxi.png" class="mini-profe">
+
+    <script>
+        const canvas = document.getElementById('trazosCanvas');
+        const ctx = canvas.getContext('2d');
+        const musica = document.getElementById('musicaFondo');
+        let dibujando = false;
+        let nivelActual = 1;
+
+        function ajustarCanvas() {
+            canvas.width = window.innerWidth * 0.85;
+            canvas.height = window.innerHeight * 0.42;
+            limpiarCanvas();
+        }
+
+        function limpiarCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            dibujarGuia(nivelActual);
+        }
+
+        function siguienteEjercicio() {
+            nivelActual = nivelActual < 4 ? nivelActual + 1 : 1;
+            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 4`;
+            limpiarCanvas();
+        }
+
+        function dibujarCirculo(x, y, radius) {
+            ctx.fillStyle = "#BDBDBD";
+            const steps = 30;
+            for (let i = 0; i < steps; i++) {
+                let angle = (i / steps) * Math.PI * 2;
+                let px = x + Math.cos(angle) * radius;
+                let py = y + Math.sin(angle) * (radius * 1.2); // Elipse ligera para la O
+                ctx.beginPath();
+                ctx.arc(px, py, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function dibujarGuia(nivel) {
+            const w = canvas.width;
+            const h = canvas.height;
+            const radius = h * 0.25;
+
+            if (nivel === 1) { // 1 Mayúscula
+                dibujarCirculo(w * 0.5, h * 0.5, radius);
+            } 
+            else if (nivel === 2) { // 2 Mayúsculas
+                dibujarCirculo(w * 0.3, h * 0.5, radius * 0.7);
+                dibujarCirculo(w * 0.7, h * 0.5, radius * 0.7);
+            } 
+            else if (nivel === 3) { // 1 Minúscula
+                dibujarCirculo(w * 0.5, h * 0.5, radius * 0.5);
+            } 
+            else if (nivel === 4) { // 2 Minúsculas
+                dibujarCirculo(w * 0.3, h * 0.5, radius * 0.4);
+                dibujarCirculo(w * 0.7, h * 0.5, radius * 0.4);
+            }
+        }
+
+        function capturarPantalla() {
+            const link = document.createElement('a');
+            link.download = `vocal_o_ejercicio_${nivelActual}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+
+        function obtenerPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function iniciar(e) { 
+            dibujando = true; 
+            if (musica.paused) musica.play();
+            const p = obtenerPos(e); 
+            ctx.beginPath(); 
+            ctx.moveTo(p.x, p.y); 
+            e.preventDefault(); 
+        }
+
+        function mover(e) { 
+            if (!dibujando) return; 
+            const p = obtenerPos(e); 
+            ctx.lineTo(p.x, p.y); 
+            ctx.strokeStyle = "#4CAF50"; ctx.lineWidth = 10; ctx.lineCap = "round"; ctx.stroke(); 
+            e.preventDefault(); 
+        }
+
+        canvas.addEventListener('touchstart', iniciar, {passive: false});
+        canvas.addEventListener('touchmove', mover, {passive: false});
+        canvas.addEventListener('mousedown', iniciar);
+        canvas.addEventListener('mousemove', mover);
+        window.addEventListener('mouseup', () => dibujando = false);
+        window.addEventListener('touchend', () => dibujando = false);
+        window.addEventListener('resize', ajustarCanvas);
+        ajustarCanvas();
+    </script>
+</body>
+</html>
