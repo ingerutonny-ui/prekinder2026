@@ -88,23 +88,24 @@
 
         function dibujarU(x, y, size) {
             ctx.fillStyle = "#BDBDBD";
-            // Dibujar la curva inferior y los dos palos verticales de la U
             const steps = 40;
+            const halfWidth = size * 0.8;
+            
             for (let i = 0; i <= steps; i++) {
                 let px, py;
-                if (i <= 20) {
-                    // Lado izquierdo
-                    px = x - size;
-                    py = y - size + (i / 20) * (size * 2);
-                } else if (i > 20 && i < 30) {
+                if (i <= 15) {
+                    // Palo izquierdo
+                    px = x - halfWidth;
+                    py = (y - size) + (i / 15) * size;
+                } else if (i > 15 && i < 25) {
                     // Curva base
-                    let angle = (i - 20) / 10 * Math.PI;
-                    px = x - size + size * (1 - Math.cos(angle));
-                    py = y + size - size * Math.sin(angle);
+                    let angle = ((i - 15) / 10) * Math.PI;
+                    px = (x - halfWidth) + halfWidth * (1 - Math.cos(angle));
+                    py = y + size * Math.sin(angle);
                 } else {
-                    // Lado derecho
-                    px = x + size;
-                    py = y - size + ((i - 30) / 10) * (size * 2);
+                    // Palo derecho
+                    px = x + halfWidth;
+                    py = (y - size) + ((i - 25) / 15) * size;
                 }
                 ctx.beginPath();
                 ctx.arc(px, py, 5, 0, Math.PI * 2);
@@ -117,19 +118,19 @@
             const h = canvas.height;
             const size = h * 0.25;
 
-            if (nivel === 1) { // 1 Mayúscula
-                dibujarU(w * 0.5, h * 0.5, size);
+            if (nivel === 1) {
+                dibujarU(w * 0.5, h * 0.45, size);
             } 
-            else if (nivel === 2) { // 2 Mayúsculas
-                dibujarU(w * 0.3, h * 0.5, size * 0.6);
-                dibujarU(w * 0.7, h * 0.5, size * 0.6);
+            else if (nivel === 2) {
+                dibujarU(w * 0.3, h * 0.45, size * 0.7);
+                dibujarU(w * 0.7, h * 0.45, size * 0.7);
             } 
-            else if (nivel === 3) { // 1 Minúscula
-                dibujarU(w * 0.5, h * 0.5, size * 0.5);
+            else if (nivel === 3) {
+                dibujarU(w * 0.5, h * 0.45, size * 0.5);
             } 
-            else if (nivel === 4) { // 2 Minúsculas
-                dibujarU(w * 0.3, h * 0.5, size * 0.4);
-                dibujarU(w * 0.7, h * 0.5, size * 0.4);
+            else if (nivel === 4) {
+                dibujarU(w * 0.3, h * 0.45, size * 0.4);
+                dibujarU(w * 0.7, h * 0.45, size * 0.4);
             }
         }
 
