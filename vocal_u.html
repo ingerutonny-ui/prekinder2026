@@ -88,24 +88,25 @@
 
         function dibujarU(x, y, size) {
             ctx.fillStyle = "#BDBDBD";
-            const steps = 40;
-            const halfWidth = size * 0.8;
-            
+            const steps = 60;
+            const width = size * 0.8;
+            const curveRadius = width / 2;
+
             for (let i = 0; i <= steps; i++) {
                 let px, py;
-                if (i <= 15) {
-                    // Palo izquierdo
-                    px = x - halfWidth;
-                    py = (y - size) + (i / 15) * size;
-                } else if (i > 15 && i < 25) {
+                if (i <= 20) {
+                    // Palo izquierdo descendente
+                    px = x - width / 2;
+                    py = (y - size / 2) + (i / 20) * size;
+                } else if (i > 20 && i <= 40) {
                     // Curva base
-                    let angle = ((i - 15) / 10) * Math.PI;
-                    px = (x - halfWidth) + halfWidth * (1 - Math.cos(angle));
-                    py = y + size * Math.sin(angle);
+                    let angle = ((i - 20) / 20) * Math.PI;
+                    px = x - width / 2 + curveRadius * (1 - Math.cos(angle));
+                    py = y + size / 2 + curveRadius * Math.sin(angle);
                 } else {
-                    // Palo derecho
-                    px = x + halfWidth;
-                    py = (y - size) + ((i - 25) / 15) * size;
+                    // Palo derecho con la colita (trazo recto descendente)
+                    px = x + width / 2;
+                    py = (y - size / 2) + ((i - 40) / 20) * size;
                 }
                 ctx.beginPath();
                 ctx.arc(px, py, 5, 0, Math.PI * 2);
