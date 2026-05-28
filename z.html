@@ -30,8 +30,28 @@
         .firma { margin-top: 10px; font-size: 1.4rem; color: #3F51B5; font-weight: bold; font-style: italic; background: rgba(255, 255, 255, 0.8); padding: 5px 15px; border-radius: 20px; }
 
         .video-column { display: flex; flex-direction: column; gap: 15px; }
-        .card-video { background: linear-gradient(135deg, #9C27B0, #E91E63); color: white; border: 4px solid #ffffff; width: 160px; padding: 15px; border-radius: 20px; text-decoration: none; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .card-video h2 { color: white; margin: 5px 0 0 0; font-size: 0.9rem; }
+        /* Reemplaza tu clase .card-video actual por esta */
+        .card-video { 
+            background: white; 
+            color: #333; 
+            border: 4px solid #4CAF50; /* Mismo borde verde */
+            width: 160px; 
+            padding: 15px; 
+            border-radius: 20px; 
+            text-decoration: none; 
+            text-align: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .card-video:active { transform: scale(0.95); }
+        
+        .card-video h2 { 
+            color: #333; 
+            margin: 5px 0 0 0; 
+            font-size: 0.9rem; 
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -58,7 +78,7 @@
         <div class="video-column">
             <a href="https://www.youtube.com/watch?v=EYOsAbazkSI" target="_blank" class="card-video">
                 <div class="icon" style="font-size: 2rem;">▶️</div>
-                <h2>Ver Video 01</h2>
+                <h2>Las Vocales</h2>
             </a>
 
 
