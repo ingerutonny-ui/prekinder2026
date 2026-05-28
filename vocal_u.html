@@ -9,7 +9,7 @@
             margin: 0; padding: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; height: 100vh;
             background: url('fondo_u.png') no-repeat center center fixed;
-            background-size: cover; font-family: 'Arial', sans-serif; overflow: hidden;
+            background-size: cover; font-family: 'Lucida Sans', 'Arial', sans-serif; overflow: hidden;
         }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.4); z-index: -1; }
         
@@ -47,7 +47,7 @@
     <audio id="musicaFondo" src="u.mp3" loop></audio>
 
     <div id="nivel-texto">Ejercicio 1 de 4</div>
-    <div class="header-trazos"><h1>✨ ¡Bordea la Vocal U con tu dedito! ✨</h1></div>
+    <div class="header-trazos"><h1>✨ ¡Bordea la Vocal u con tu dedito! ✨</h1></div>
 
     <div id="canvas-container">
         <canvas id="trazosCanvas"></canvas>
@@ -86,52 +86,33 @@
             limpiarCanvas();
         }
 
-        function dibujarU(x, y, size) {
-            ctx.fillStyle = "#BDBDBD";
-            const steps = 60;
-            const width = size * 0.8;
-            const curveRadius = width / 2;
-
-            for (let i = 0; i <= steps; i++) {
-                let px, py;
-                if (i <= 20) {
-                    // Palo izquierdo descendente
-                    px = x - width / 2;
-                    py = (y - size / 2) + (i / 20) * size;
-                } else if (i > 20 && i <= 40) {
-                    // Curva base
-                    let angle = ((i - 20) / 20) * Math.PI;
-                    px = x - width / 2 + curveRadius * (1 - Math.cos(angle));
-                    py = y + size / 2 + curveRadius * Math.sin(angle);
-                } else {
-                    // Palo derecho con la colita (trazo recto descendente)
-                    px = x + width / 2;
-                    py = (y - size / 2) + ((i - 40) / 20) * size;
-                }
-                ctx.beginPath();
-                ctx.arc(px, py, 5, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
+        // Renderizado de texto con fuente Lucida Sans
         function dibujarGuia(nivel) {
+            ctx.fillStyle = "#E0E0E0";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
             const w = canvas.width;
             const h = canvas.height;
-            const size = h * 0.25;
+            const fontSize = h * 0.6;
+            ctx.font = `${fontSize}px 'Lucida Sans', sans-serif`;
 
             if (nivel === 1) {
-                dibujarU(w * 0.5, h * 0.45, size);
+                ctx.fillText("u", w * 0.5, h * 0.55);
             } 
             else if (nivel === 2) {
-                dibujarU(w * 0.3, h * 0.45, size * 0.7);
-                dibujarU(w * 0.7, h * 0.45, size * 0.7);
+                ctx.font = `${fontSize * 0.7}px 'Lucida Sans', sans-serif`;
+                ctx.fillText("u", w * 0.3, h * 0.55);
+                ctx.fillText("u", w * 0.7, h * 0.55);
             } 
             else if (nivel === 3) {
-                dibujarU(w * 0.5, h * 0.45, size * 0.5);
+                ctx.font = `${fontSize * 0.5}px 'Lucida Sans', sans-serif`;
+                ctx.fillText("u", w * 0.5, h * 0.55);
             } 
             else if (nivel === 4) {
-                dibujarU(w * 0.3, h * 0.45, size * 0.4);
-                dibujarU(w * 0.7, h * 0.45, size * 0.4);
+                ctx.font = `${fontSize * 0.4}px 'Lucida Sans', sans-serif`;
+                ctx.fillText("u", w * 0.3, h * 0.55);
+                ctx.fillText("u", w * 0.7, h * 0.55);
             }
         }
 
@@ -162,7 +143,7 @@
             if (!dibujando) return; 
             const p = obtenerPos(e); 
             ctx.lineTo(p.x, p.y); 
-            ctx.strokeStyle = "#4CAF50"; ctx.lineWidth = 10; ctx.lineCap = "round"; ctx.stroke(); 
+            ctx.strokeStyle = "#4CAF50"; ctx.lineWidth = 15; ctx.lineCap = "round"; ctx.stroke(); 
             e.preventDefault(); 
         }
 
