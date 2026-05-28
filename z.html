@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Kinder 2026 - Inicio</title>
+    <style>
+        body {
+            margin: 0; display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; background: url('fondo_trazos.jpg') no-repeat center center fixed;
+            background-size: cover; font-family: 'Arial', sans-serif; text-align: center;
+        }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 235, 59, 0.4); z-index: -1; }
+        h1 { color: #E91E63; font-size: 2.2rem; margin: 20px 0; text-shadow: 2px 2px white; background: rgba(255, 255, 255, 0.7); padding: 10px 20px; border-radius: 50px; }
+
+        /* Contenedor de dos columnas */
+        .main-layout { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 95%; max-width: 1000px; padding-bottom: 20px; }
+        
+        /* Columna Izquierda: Profe */
+        .profe-column { flex: 0 0 300px; display: flex; flex-direction: column; align-items: center; }
+        .img-profe { width: 100%; height: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
+        .firma { margin-top: 10px; font-size: 1.4rem; color: #3F51B5; font-weight: bold; font-style: italic; background: rgba(255, 255, 255, 0.8); padding: 5px 15px; border-radius: 20px; }
+
+        /* Columna Derecha: Menú */
+        .menu-column { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        
+        .card { background: white; padding: 15px; border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.2); text-decoration: none; color: #333; transition: transform 0.3s; border: 4px solid #4CAF50; }
+        .card:active { transform: scale(0.9); }
+        .card h2 { margin: 10px 0; font-size: 1rem; }
+        .icon { font-size: 2.5rem; }
+
+        /* Botón de Video (Ejemplo para agregar luego) */
+        .card-video { border-color: #9C27B0; background: #f3e5f5; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <h1>🖍️ Mi Jardín Digital 2026</h1>
+
+    <div class="main-layout">
+        <div class="profe-column">
+            <img src="profe_maxi.png" alt="Profe Maxi" class="img-profe">
+            <div class="firma">.....Pre-Kinder "D".....</div>
+        </div>
+
+        <div class="menu-column">
+            <a href="pk-trazos-01.html" class="card">
+                <div class="icon">✍️</div>
+                <h2>Practicar Trazos 01</h2>
+            </a>
+            <a href="vocal_a.html" class="card">
+                <div class="icon">A</div>
+                <h2>Vocal A</h2>
+            </a>
+            <a href="vocal_e.html" class="card">
+                <div class="icon">E</div>
+                <h2>Vocal E</h2>
+            </a>
+            <a href="numero_6.html" class="card">
+                <div class="icon">6</div>
+                <h2>Número 6</h2>
+            </a>
+            <a href="vocal_i.html" class="card">
+                <div class="icon">I</div>
+                <h2>Vocal I</h2>
+            </a>
+            <a href="vocal_o.html" class="card">
+                <div class="icon">O</div>
+                <h2>Vocal O</h2>
+            </a>
+            <a href="vocal_u.html" class="card">
+                <div class="icon">U</div>
+                <h2>Vocal U</h2>
+            </a>
+            </div>
+    </div>
+</body>
+</html>
