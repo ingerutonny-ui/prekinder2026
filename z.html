@@ -9,30 +9,29 @@
             margin: 0; min-height: 100vh;
             background: url('fondo_trazos.jpg') no-repeat center center fixed;
             background-size: cover; font-family: 'Arial', sans-serif;
-            display: flex; flex-direction: column; align-items: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 235, 59, 0.4); z-index: -1; }
         
-        h1 { color: #E91E63; font-size: 2.2rem; margin-top: 20px; margin-bottom: 30px; text-shadow: 2px 2px white; background: rgba(255, 255, 255, 0.7); padding: 10px 20px; border-radius: 50px; }
+        h1 { color: #E91E63; font-size: 2.2rem; margin-bottom: 30px; text-shadow: 2px 2px white; background: rgba(255, 255, 255, 0.7); padding: 10px 20px; border-radius: 50px; }
 
-        .wrapper { display: flex; align-items: center; justify-content: center; gap: 40px; width: 95%; max-width: 900px; }
-
-        .profe-wrapper { display: flex; flex-direction: column; align-items: center; }
-        .img-profe { width: 300px; height: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
-        .firma { margin-top: 10px; font-size: 1.4rem; color: #3F51B5; font-weight: bold; font-style: italic; background: rgba(255, 255, 255, 0.8); padding: 5px 15px; border-radius: 20px; }
-
-        .menu-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 550px; }
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.2); text-decoration: none; color: #333; transition: transform 0.3s; border: 4px solid #4CAF50; }
+        /* Contenedor principal del menú */
+        .menu-container { display: grid; grid-template-columns: repeat(3, 160px); gap: 20px; margin-bottom: 30px; }
+        
+        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.2); text-decoration: none; color: #333; transition: transform 0.3s; border: 4px solid #4CAF50; text-align: center; }
         .card:active { transform: scale(0.9); }
         .card h2 { margin: 10px 0; font-size: 1.1rem; }
         .icon { font-size: 3rem; }
 
-        /* Botón Creativo de Video */
-        .card-video { 
-            background: linear-gradient(135deg, #9C27B0, #E91E63); 
-            color: white; border: 4px solid #ffffff; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        /* Contenedor inferior: Profe a la izquierda + Botones video a la derecha */
+        .bottom-bar { display: flex; align-items: flex-end; justify-content: center; gap: 50px; width: 100%; padding: 0 20px; }
+
+        .profe-container { display: flex; flex-direction: column; align-items: center; }
+        .img-profe { width: 300px; height: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
+        .firma { margin-top: 10px; font-size: 1.4rem; color: #3F51B5; font-weight: bold; font-style: italic; background: rgba(255, 255, 255, 0.8); padding: 5px 15px; border-radius: 20px; }
+
+        .video-zone { display: flex; gap: 20px; }
+        .card-video { background: linear-gradient(135deg, #9C27B0, #E91E63); color: white; border: 4px solid #ffffff; width: 160px; }
         .card-video h2 { color: white; }
     </style>
 </head>
@@ -41,41 +40,23 @@
     <div class="overlay"></div>
     <h1>🖍️ Mi Jardín Digital 2026</h1>
 
-    <div class="wrapper">
-        <div class="profe-wrapper">
+    <div class="menu-container">
+        <a href="pk-trazos-01.html" class="card"><div class="icon">✍️</div><h2>Practicar Trazos 01</h2></a>
+        <a href="vocal_a.html" class="card"><div class="icon">A</div><h2>Vocal A</h2></a>
+        <a href="vocal_e.html" class="card"><div class="icon">E</div><h2>Vocal E</h2></a>
+        <a href="numero_6.html" class="card"><div class="icon">6</div><h2>Número 6</h2></h2></a>
+        <a href="vocal_i.html" class="card"><div class="icon">I</div><h2>Vocal I</h2></a>
+        <a href="vocal_o.html" class="card"><div class="icon">O</div><h2>Vocal O</h2></a>
+        <a href="vocal_u.html" class="card"><div class="icon">U</div><h2>Vocal U</h2></a>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="profe-container">
             <img src="profe_maxi.png" alt="Profe Maxi" class="img-profe">
             <div class="firma">.....Pre-Kinder "D".....</div>
         </div>
-
-        <div class="menu-container">
-            <a href="pk-trazos-01.html" class="card">
-                <div class="icon">✍️</div>
-                <h2>Practicar Trazos 01</h2>
-            </a>
-            <a href="vocal_a.html" class="card">
-                <div class="icon">A</div>
-                <h2>Vocal A</h2>
-            </a>
-            <a href="vocal_e.html" class="card">
-                <div class="icon">E</div>
-                <h2>Vocal E</h2>
-            </a>
-            <a href="numero_6.html" class="card">
-                <div class="icon">6</div>
-                <h2>Número 6</h2>
-            </a>
-            <a href="vocal_i.html" class="card">
-                <div class="icon">I</div>
-                <h2>Vocal I</h2>
-            </a>
-            <a href="vocal_o.html" class="card">
-                <div class="icon">O</div>
-                <h2>Vocal O</h2>
-            </a>
-            <a href="vocal_u.html" class="card">
-                <div class="icon">U</div>
-                <h2>Vocal U</h2>
-            </a>
+        
+        <div class="video-zone">
             <a href="video_01.html" class="card card-video">
                 <div class="icon">▶️</div>
                 <h2>Ver Video 01</h2>
