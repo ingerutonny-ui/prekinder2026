@@ -12,27 +12,26 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 235, 59, 0.4); z-index: -1; }
-        
         h1 { color: #E91E63; font-size: 2.2rem; margin-bottom: 30px; text-shadow: 2px 2px white; background: rgba(255, 255, 255, 0.7); padding: 10px 20px; border-radius: 50px; }
 
-        /* Contenedor principal del menú */
-        .menu-container { display: grid; grid-template-columns: repeat(3, 160px); gap: 20px; margin-bottom: 30px; }
+        /* Contenedor Superior: Menú original */
+        .menu-container { display: grid; grid-template-columns: repeat(3, 160px); gap: 20px; margin-bottom: 40px; }
         
         .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.2); text-decoration: none; color: #333; transition: transform 0.3s; border: 4px solid #4CAF50; text-align: center; }
         .card:active { transform: scale(0.9); }
         .card h2 { margin: 10px 0; font-size: 1.1rem; }
         .icon { font-size: 3rem; }
 
-        /* Contenedor inferior: Profe a la izquierda + Botones video a la derecha */
-        .bottom-bar { display: flex; align-items: flex-end; justify-content: center; gap: 50px; width: 100%; padding: 0 20px; }
+        /* Contenedor Inferior: Logo izquierda, Videos derecha */
+        .bottom-section { display: flex; align-items: flex-start; justify-content: center; gap: 60px; width: 100%; max-width: 600px; }
 
         .profe-container { display: flex; flex-direction: column; align-items: center; }
-        .img-profe { width: 300px; height: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
+        .img-profe { width: 280px; height: auto; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
         .firma { margin-top: 10px; font-size: 1.4rem; color: #3F51B5; font-weight: bold; font-style: italic; background: rgba(255, 255, 255, 0.8); padding: 5px 15px; border-radius: 20px; }
 
-        .video-zone { display: flex; gap: 20px; }
-        .card-video { background: linear-gradient(135deg, #9C27B0, #E91E63); color: white; border: 4px solid #ffffff; width: 160px; }
-        .card-video h2 { color: white; }
+        .video-column { display: flex; flex-direction: column; gap: 15px; }
+        .card-video { background: linear-gradient(135deg, #9C27B0, #E91E63); color: white; border: 4px solid #ffffff; width: 160px; padding: 15px; border-radius: 20px; text-decoration: none; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .card-video h2 { color: white; margin: 5px 0 0 0; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -44,34 +43,28 @@
         <a href="pk-trazos-01.html" class="card"><div class="icon">✍️</div><h2>Practicar Trazos 01</h2></a>
         <a href="vocal_a.html" class="card"><div class="icon">A</div><h2>Vocal A</h2></a>
         <a href="vocal_e.html" class="card"><div class="icon">E</div><h2>Vocal E</h2></a>
-        <a href="numero_6.html" class="card"><div class="icon">6</div><h2>Número 6</h2></h2></a>
+        <a href="numero_6.html" class="card"><div class="icon">6</div><h2>Número 6</h2></a>
         <a href="vocal_i.html" class="card"><div class="icon">I</div><h2>Vocal I</h2></a>
         <a href="vocal_o.html" class="card"><div class="icon">O</div><h2>Vocal O</h2></a>
         <a href="vocal_u.html" class="card"><div class="icon">U</div><h2>Vocal U</h2></a>
     </div>
 
-    <div class="bottom-bar">
+    <div class="bottom-section">
         <div class="profe-container">
             <img src="profe_maxi.png" alt="Profe Maxi" class="img-profe">
             <div class="firma">.....Pre-Kinder "D".....</div>
         </div>
         
-        <div class="video-zone">
-            <a href="video_01.html" class="card card-video">
-                <div class="icon">▶️</div>
+        <div class="video-column">
+            <a href="video_01.html" class="card-video">
+                <div class="icon" style="font-size: 2rem;">▶️</div>
                 <h2>Ver Video 01</h2>
             </a>
-        </div>
-        
-        <div class="video-zone">
-            <a href="video_01.html" class="card card-video">
-                <div class="icon">▶️</div>
-                <h2>Ver Video 01</h2>
+            <a href="video_02.html" class="card-video">
+                <div class="icon" style="font-size: 2rem;">▶️</div>
+                <h2>Ver Video 02</h2>
             </a>
         </div>
-        
-
-        
     </div>
 
 </body>
