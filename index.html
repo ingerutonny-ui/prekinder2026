@@ -12,18 +12,16 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            /* Aplicamos tu nueva imagen de fondo */
             background: url('fondo_trazos.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Arial', sans-serif;
             text-align: center;
         }
 
-        /* Capa opcional para mejorar la lectura sobre el fondo */
         .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(255, 235, 59, 0.4); /* Amarillo semi-transparente */
+            background-color: rgba(255, 235, 59, 0.4);
             z-index: -1;
         }
 
@@ -41,37 +39,47 @@
         .menu-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 20px;
+            gap: 25px;
             width: 85%;
-            max-width: 550px;
+            max-width: 600px;
             margin-bottom: 20px;
         }
 
         .card {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 20px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             text-decoration: none;
             color: #333;
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
             border: 4px solid #4CAF50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .card:active {
-            transform: scale(0.9);
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+        }
+
+        .card img {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
         }
 
         .card h2 {
-            margin: 10px 0;
-            font-size: 1.1rem;
+            margin: 0;
+            font-size: 1rem;
         }
 
         .icon {
             font-size: 3rem;
+            margin-bottom: 10px;
         }
 
-        /* Estilo para la Profe Maxi */
         .profe-container {
             margin-top: 10px;
             display: flex;
@@ -80,7 +88,7 @@
         }
 
         .img-profe {
-            width: 400px; /* Ajusta según el tamaño de tu imagen */
+            width: 400px;
             height: auto;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
         }
@@ -94,20 +102,6 @@
             background: rgba(255, 255, 255, 0.8);
             padding: 5px 15px;
             border-radius: 20px;
-        }
-
-        /* Estilo específico para tarjetas deshabilitadas o pendientes */
-        .card.disabled {
-            opacity: 0.7;
-            border-color: #9E9E9E;
-            cursor: not-allowed;
-        }
-        .card.disabled h2 span {
-            display: block;
-            font-size: 0.85rem;
-            color: #757575;
-            font-weight: normal;
-            margin-top: 4px;
         }
     </style>
 </head>
@@ -124,35 +118,34 @@
         </a>
 
         <a href="vocal_a.html" class="card">
-            <div class="icon">A</div>
+            <img src="a.png" alt="Vocal A">
             <h2>Vocal A</h2>
         </a>
 
         <a href="vocal_e.html" class="card">
-            <div class="icon">E</div>
+            <img src="e.png" alt="Vocal E">
             <h2>Vocal E</h2>
         </a>
 
-        <a href="numero_6.html" class="card"se;">
-            <div class="icon">6</div>
+        <a href="numero_6.html" class="card">
+            <img src="6.png" alt="Número 6">
             <h2>Número 6</h2>
         </a>
 
         <a href="vocal_i.html" class="card">
-            <div class="icon">I</div>
+            <img src="i.png" alt="Vocal I">
             <h2>Vocal I</h2>
         </a>
 
         <a href="vocal_o.html" class="card">
-            <div class="icon">O</div>
+            <img src="o.png" alt="Vocal O">
             <h2>Vocal O</h2>
         </a>
 
         <a href="vocal_u.html" class="card">
-            <div class="icon">U</div>
+            <img src="u.png" alt="Vocal U">
             <h2>Vocal U</h2>
         </a>
-        
     </div>
 
     <div class="profe-container">
