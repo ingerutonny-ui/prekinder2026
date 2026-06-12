@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pre-Kinder 2026 - Número 7</title>
+    <title>Pre-Kinder 2026 - Número 9</title>
     <style>
         /* Cargamos tu fuente tipográfica formalmente */
         @font-face {
@@ -17,7 +17,7 @@
         body {
             margin: 0; padding: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; height: 100vh;
-            background: url('fondo_7.png') no-repeat center center fixed;
+            background: url('fondo_9.png') no-repeat center center fixed;
             background-size: cover; font-family: 'Arial', sans-serif; overflow: hidden;
         }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.4); z-index: -1; }
@@ -55,10 +55,10 @@
 
     <div class="bg-overlay"></div>
     
-    <audio id="musicaFondo" src="numero_7.mp3" loop></audio>
+    <audio id="musicaFondo" src="numero_9.mp3" loop></audio>
 
     <div id="nivel-texto">Ejercicio 1 de 2</div>
-    <div class="header-trazos"><h1>✨ ¡Bordea el Número 7 con tu dedito! ✨</h1></div>
+    <div class="header-trazos"><h1>✨ ¡Bordea el Número 9 con tu dedito! ✨</h1></div>
 
     <div id="canvas-container">
         <canvas id="trazosCanvas"></canvas>
@@ -113,17 +113,17 @@
             const centerY = h * 0.52; 
 
             if (nivel === 1) {
-                dibujarTextoPunteado("7", w * 0.50, centerY, h * 0.85);
+                dibujarTextoPunteado("9", w * 0.50, centerY, h * 0.85);
             } 
             else if (nivel === 2) {
-                dibujarTextoPunteado("7", w * 0.32, centerY, h * 0.75);
-                dibujarTextoPunteado("7", w * 0.68, centerY, h * 0.75);
+                dibujarTextoPunteado("9", w * 0.32, centerY, h * 0.75);
+                dibujarTextoPunteado("9", w * 0.68, centerY, h * 0.75);
            }
         }
 
         function capturarPantalla() {
             const link = document.createElement('a');
-            link.download = `numero_7_ejercicio_${nivelActual}.png`;
+            link.download = `numero_9_ejercicio_${nivelActual}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
         }
