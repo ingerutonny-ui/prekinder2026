@@ -14,44 +14,54 @@
         }
 
         .header-nav { 
-            width: 100%; height: 15vh; display: flex; justify-content: space-between; 
+            width: 100%; height: 12vh; display: flex; justify-content: space-between; 
             align-items: center; padding: 0 20px; box-sizing: border-box;
         }
 
         .btn-nav { 
-            background: #2196F3; color: white; border: none; padding: 20px 40px; 
-            border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.2rem;
+            background: #2196F3; color: white; border: none; padding: 10px 20px; 
+            border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem;
             box-shadow: 0 5px 0 #1565C0;
         }
 
         .btn-siguiente { 
-            background: #FF9800; color: white; border: none; padding: 20px 40px; 
-            border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.2rem;
+            background: #FF9800; color: white; border: none; padding: 10px 20px; 
+            border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem;
             box-shadow: 0 5px 0 #F57C00;
         }
 
         #letrero-titulo {
-            background: white; padding: 15px 40px; border-radius: 50px;
+            background: white; padding: 10px 20px; border-radius: 50px;
             border: 4px solid #FF4500; color: #FF4500; font-weight: bold;
-            font-size: 1.4rem; text-align: center;
+            font-size: 1.2rem; text-align: center;
         }
 
         #canvas-container { 
-            flex-grow: 1; width: 85vw; height: 60vh;
+            flex-grow: 1; width: 90vw; height: 60vh;
             background: white; border-radius: 40px; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden; margin-bottom: 20px;
+            position: relative; overflow: hidden; margin-bottom: 10px;
         }
         
         #lienzo { width: 100%; height: 100%; object-fit: contain; cursor: crosshair; touch-action: none; }
         
-        .paleta-container { height: 18vh; display: flex; gap: 20px; align-items: center; justify-content: center; padding-bottom: 20px; }
-        .color-btn { width: 75px; height: 75px; border-radius: 50%; border: 6px solid #fff; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        .paleta-container { height: 18vh; display: flex; gap: 10px; align-items: center; justify-content: center; padding-bottom: 10px; flex-wrap: wrap; }
+        .color-btn { width: 50px; height: 50px; border-radius: 50%; border: 4px solid #fff; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
         
         .btn-limpiar { 
-            background: black; color: white; border: none; padding: 25px 30px; 
-            border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center;
+            background: black; color: white; border: none; padding: 10px 15px; 
+            border-radius: 20px; font-weight: bold; cursor: pointer; text-align: center; font-size: 0.8rem;
+        }
+
+        /* Responsive para celulares */
+        @media (max-width: 600px) {
+            .header-nav { height: 10vh; padding: 0 10px; }
+            #letrero-titulo { font-size: 0.8rem; padding: 5px 10px; }
+            .btn-nav, .btn-siguiente { padding: 8px 15px; font-size: 0.8rem; }
+            .color-btn { width: 40px; height: 40px; border: 2px solid #fff; }
+            .paleta-container { gap: 5px; }
+            .btn-limpiar { padding: 5px 10px; font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -83,7 +93,6 @@
     let indiceActual = 0;
     let colorActual = 'red';
     let isDrawing = false;
-    // COMENTARIO: Cambia 'GROSOR_PINCEL' para ajustar el trazo
     const GROSOR_PINCEL = 10;
 
     function cargarEjercicio() {
