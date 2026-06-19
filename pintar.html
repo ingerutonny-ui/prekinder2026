@@ -3,34 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kinder - Ejercicios Interactivos</title>
+    <title>Kinder - Ejercicios</title>
     <style>
-        body { margin: 0; display: flex; flex-direction: column; align-items: center; background-color: #fffde7; height: 100vh; overflow: hidden; font-family: sans-serif; }
-        
-        .header-nav { width: 100%; height: 10vh; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; }
-        
-        #canvas-container { 
-            flex-grow: 1; width: 85vw; height: 75vh; margin: 10px; 
-            border: 10px solid #fff; border-radius: 30px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            background: white; position: relative;
+        body { 
+            margin: 0; padding: 0; height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            background-image: url('fondo_trazos.jpg'); 
+            background-size: cover; background-position: center;
+            font-family: sans-serif;
         }
         
-        #lienzo { width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+        .header-nav { width: 100%; height: 10vh; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; box-sizing: border-box; }
         
-        .paleta-container { height: 15vh; display: flex; gap: 20px; align-items: center; justify-content: center; }
-        .color-btn { width: 70px; height: 70px; border-radius: 50%; border: 5px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; }
+        #canvas-container { 
+            flex-grow: 1; width: 80vw; height: 70vh;
+            background: white; border-radius: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+            position: relative; overflow: hidden;
+        }
+        
+        /* Ajuste clave: object-fit: contain evita la deformación */
+        #lienzo { width: 100%; height: 100%; object-fit: contain; touch-action: none; cursor: crosshair; }
+        
+        .paleta-container { height: 15vh; display: flex; gap: 25px; align-items: center; justify-content: center; }
+        .color-btn { width: 70px; height: 70px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="header-nav">
-    <button onclick="cambiarEjercicio(-1)">ANTERIOR</button>
-    <h3>Ejercicio <span id="numEj">1</span> de 5</h3>
-    <button onclick="cambiarEjercicio(1)">SIGUIENTE</button>
+    <button onclick="cambiarEjercicio(-1)" style="padding: 15px 30px; font-size: 1.2rem;">ANTERIOR</button>
+    <h1 id="tituloEjercicio" style="margin: 0;">Ejercicio 1 de 5</h1>
+    <button onclick="cambiarEjercicio(1)" style="padding: 15px 30px; font-size: 1.2rem;">SIGUIENTE</button>
 </div>
 
-<div id="canvas-container" style="background-image: url('fondo_trazos.jpg'); background-size: cover;">
+<div id="canvas-container">
     <canvas id="lienzo"></canvas>
 </div>
 
@@ -40,7 +48,7 @@
     <div class="color-btn" style="background: blue;" onclick="colorActual='blue'"></div>
     <div class="color-btn" style="background: #8B4513;" onclick="colorActual='#8B4513'"></div>
     <div class="color-btn" style="background: green;" onclick="colorActual='green'"></div>
-    <button onclick="limpiarCanvas()" style="padding: 15px;">LIMPIAR</button>
+    <button onclick="limpiarCanvas()" style="padding: 20px; font-size: 1.2rem;">LIMPIAR</button>
 </div>
 
 <script>
@@ -49,17 +57,19 @@
     const ejercicios = ['p_auto.png', 'p_caracol.png', 'p_casa.png', 'p_perro.png', 'p_pez.png'];
     let indiceActual = 0;
     let colorActual = 'red';
+    let isDrawing = false;
     
-    // COMENTARIO: Cambia el valor de 'lineWidth' para ajustar el grosor del pincel
-    const GROSOR_PINCEL = 10; 
+    // COMENTARIO: Cambia 'GROSOR_PINCEL' para ajustar el trazo
+    const GROSOR_PINCEL = 15; 
 
     function cargarEjercicio() {
         const img = new Image();
         img.onload = () => {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            document.getElementById('numEj').innerText = indiceActual + 1;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            document.getElementById('tituloEjercicio').innerText = `Ejercicio ${indiceActual + 1} de 5`;
         };
         img.src = ejercicios[indiceActual];
     }
@@ -69,32 +79,45 @@
         cargarEjercicio();
     }
 
-    function limpiarCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        cargarEjercicio();
+    function limpiarCanvas() { cargarEjercicio(); }
+
+    function startDraw(e) {
+        isDrawing = true;
+        ctx.beginPath();
+        draw(e);
     }
 
-    function dibujar(e) {
-        if (e.buttons !== 1 && e.type !== 'touchmove') return;
+    function draw(e) {
+        if (!isDrawing) return;
+        
+        // Configuración para trazo continuo y suave
         ctx.lineWidth = GROSOR_PINCEL;
+        ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.strokeStyle = colorActual;
-        ctx.globalAlpha = 0.7;
+        ctx.globalAlpha = 0.8;
 
         const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const clientX = e.clientX || e.touches[0].clientX;
+        const clientY = e.clientY || e.touches[0].clientY;
+        
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
 
         ctx.lineTo(x, y);
         ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x, y);
     }
 
-    canvas.addEventListener('mousedown', (e) => { ctx.beginPath(); dibujar(e); });
-    canvas.addEventListener('mousemove', dibujar);
-    canvas.addEventListener('touchstart', (e) => { ctx.beginPath(); dibujar(e); });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); dibujar(e); });
+    function stopDraw() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    canvas.addEventListener('touchend', stopDraw);
     
     window.onload = cargarEjercicio;
 </script>
