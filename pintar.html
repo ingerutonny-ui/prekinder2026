@@ -2,56 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kinder - Ejercicio</title>
     <style>
-        /* Fondo estático y original */
         body { 
-            margin: 0; padding: 0; height: 100vh; overflow: hidden;
+            margin: 0; height: 100vh; overflow: hidden;
             display: flex; flex-direction: column; align-items: center;
             background-image: url('fondo_trazos.jpg'); 
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-            font-family: 'Arial', sans-serif;
+            background-size: cover; background-position: center;
+            font-family: sans-serif;
         }
 
         .header-nav { 
             width: 100%; height: 15vh; display: flex; justify-content: space-between; 
-            align-items: center; padding: 0 50px; box-sizing: border-box;
+            align-items: center; padding: 0 40px; box-sizing: border-box;
         }
 
-        /* Botones estilo original */
+        /* Botones estilo exacto: Circulares, sombra marcada, borde blanco */
         .btn-nav { 
-            width: 120px; height: 60px; border-radius: 30px; border: 2px solid #333;
-            background: #fff; font-weight: bold; cursor: pointer; font-size: 1.1rem;
+            width: 130px; height: 130px; border-radius: 50%;
+            background: #fff; border: 8px solid #fff;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            font-weight: bold; cursor: pointer; font-size: 1.2rem;
         }
 
         #letrero-titulo {
-            background: white; padding: 15px 40px; border-radius: 50px;
-            border: 4px solid #FF4500; color: #FF4500; font-weight: bold;
-            font-size: 1.5rem; text-align: center;
+            background: white; padding: 20px 60px; border-radius: 50px;
+            border: 5px solid #FF4500; color: #FF4500; font-weight: bold;
+            font-size: 2rem; text-align: center;
         }
 
         #canvas-container { 
             flex-grow: 1; width: 80vw; height: 60vh;
             background: white; border-radius: 40px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             display: flex; justify-content: center; align-items: center;
             position: relative; overflow: hidden; margin-bottom: 20px;
         }
         
-        #lienzo { width: 100%; height: 100%; object-fit: contain; cursor: crosshair; touch-action: none; }
+        #lienzo { width: 100%; height: 100%; object-fit: contain; cursor: crosshair; }
         
-        .paleta-container { height: 15vh; display: flex; gap: 30px; align-items: center; justify-content: center; padding-bottom: 20px; }
-        .color-btn { width: 80px; height: 80px; border-radius: 50%; border: 6px solid #fff; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .btn-limpiar { padding: 20px 40px; border-radius: 30px; border: 2px solid #333; font-weight: bold; cursor: pointer; background: #fff; }
+        .paleta-container { height: 18vh; display: flex; gap: 20px; align-items: center; justify-content: center; padding-bottom: 20px; }
+        .color-btn { 
+            width: 90px; height: 90px; border-radius: 50%; 
+            border: 8px solid #fff; cursor: pointer; 
+            box-shadow: 0 6px 10px rgba(0,0,0,0.4); 
+        }
     </style>
 </head>
 <body>
 
 <div class="header-nav">
-    <button class="btn-nav" onclick="cambiarEjercicio(-1)">Volver</button>
-    <div id="letrero-titulo">✨PINTA CON TU DEDITO LA IMAGEN✨</div>
-    <button class="btn-nav" onclick="cambiarEjercicio(1)">Siguiente</button>
+    <button class="btn-nav" onclick="cambiarEjercicio(-1)">⬅</button>
+    <div id="letrero-titulo">PINTA CON TU DEDITO LA IMAGEN</div>
+    <button class="btn-nav" onclick="cambiarEjercicio(1)">➡</button>
 </div>
 
 <div id="canvas-container">
@@ -64,7 +68,6 @@
     <div class="color-btn" style="background: blue;" onclick="colorActual='blue'"></div>
     <div class="color-btn" style="background: #8B4513;" onclick="colorActual='#8B4513'"></div>
     <div class="color-btn" style="background: green;" onclick="colorActual='green'"></div>
-    <button class="btn-limpiar" onclick="limpiarCanvas()">Limpiar</button>
 </div>
 
 <script>
@@ -75,8 +78,8 @@
     let colorActual = 'red';
     let isDrawing = false;
     
-    // COMENTARIO: Ajusta el valor de GROSOR_PINCEL para cambiar el tamaño de la línea
-    const GROSOR_PINCEL = 10;
+    // Configuración de trazo para línea pura
+    const GROSOR_PINCEL = 10; 
 
     function cargarEjercicio() {
         const img = new Image();
@@ -94,8 +97,6 @@
         cargarEjercicio();
     }
 
-    function limpiarCanvas() { cargarEjercicio(); }
-
     function startDraw(e) { isDrawing = true; ctx.beginPath(); draw(e); }
     function draw(e) {
         if (!isDrawing) return;
@@ -103,7 +104,7 @@
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.strokeStyle = colorActual;
-        ctx.globalAlpha = 0.8;
+        ctx.globalAlpha = 0.85;
         
         const rect = canvas.getBoundingClientRect();
         const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
