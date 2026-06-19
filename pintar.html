@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinder - Ejercicios Interactivos</title>
+    <style>
+        body { margin: 0; display: flex; flex-direction: column; align-items: center; background-color: #fffde7; height: 100vh; overflow: hidden; }
+        
+        /* Contenedor responsivo */
+        #canvas-container { 
+            flex-grow: 1; width: 90vw; margin: 10px; border: 8px solid #ffd700; 
+            border-radius: 20px; background: white; display: flex; 
+            justify-content: center; align-items: center; position: relative;
+        }
+        #lienzo { max-width: 100%; max-height: 80vh; touch-action: none; cursor: crosshair; }
+        
+        .nav-controls { width: 100%; display: flex; justify-content: space-between; padding: 0 20px; }
+        .controles { height: 15vh; display: flex; gap: 15px; align-items: center; justify-content: center; width: 100%; }
+        .color-btn { width: 60px; height: 60px; border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+<div class="nav-controls">
+    <button onclick="cambiarEjercicio(-1)">ANTERIOR</button>
+    <h3 id="tituloEjercicio">Ejercicio 1 de 5</h3>
+    <button onclick="cambiarEjercicio(1)">SIGUIENTE</button>
+</div>
+
+<div id="canvas-container">
+    <canvas id="lienzo"></canvas>
+</div>
+
+<div class="controles">
+    <div class="color-btn" style="background: red;" onclick="cambiarColor('red')"></div>
+    <div class="color-btn" style="background: purple;" onclick="cambiarColor('purple')"></div>
+    <div class="color-btn" style="background: blue;" onclick="cambiarColor('blue')"></div>
+    <button onclick="limpiarCanvas()">LIMPIAR</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('lienzo');
+    const ctx = canvas.getContext('2d');
+    // LISTA DE TUS 5 IMÁGENES
+    const ejercicios = ['vocal_a.png', 'vocal_e.png', 'vocal_i.png', 'vocal_o.png', 'vocal_u.png'];
+    let indiceActual = 0;
+    let pintando = false;
+    let colorActual = 'red';
+
+    function cargarEjercicio() {
+        const img = new Image();
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            document.getElementById('tituloEjercicio').innerText = `Ejercicio ${indiceActual + 1} de ${ejercicios.length}`;
+        };
+        img.src = ejercicios[indiceActual];
+    }
+
+    function cambiarEjercicio(dir) {
+        indiceActual = (indiceActual + dir + ejercicios.length) % ejercicios.length;
+        cargarEjercicio();
+    }
+
+    function limpiarCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cargarEjercicio(); // Vuelve a dibujar la imagen base
+    }
+
+    // Lógica de dibujo (Misma que la anterior pero optimizada)
+    function dibujar(e) {
+        if (!pintando) return;
+        ctx.lineWidth = 25; ctx.lineCap = 'round'; ctx.strokeStyle = colorActual; ctx.globalAlpha = 0.6;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const x = ((e.clientX || e.touches[0].clientX) - rect.left) * scaleX;
+        const y = ((e.clientY || e.touches[0].clientY) - rect.top) * scaleY;
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+
+    canvas.addEventListener('mousedown', (e) => { pintando = true; dibujar(e); });
+    canvas.addEventListener('mousemove', dibujar);
+    canvas.addEventListener('mouseup', () => { pintando = false; ctx.beginPath(); });
+    canvas.addEventListener('touchstart', (e) => { pintando = true; dibujar(e); });
+    canvas.addEventListener('touchmove', dibujar);
+    canvas.addEventListener('touchend', () => { pintando = false; ctx.beginPath(); });
+
+    cargarEjercicio(); // Carga el primero al iniciar
+</script>
+</body>
+</html>
