@@ -69,9 +69,9 @@
 
 <div class="paleta-container">
     <div class="color-btn" style="background: red;" onclick="colorActual='red'"></div>
-    <div class="color-btn" style="background: purple;" onclick="colorActual='purple'"></div>
+    <div class="color-btn" style="background: purple;" onclick="colorActual='yellow'"></div>
     <div class="color-btn" style="background: blue;" onclick="colorActual='blue'"></div>
-    <div class="color-btn" style="background: #8B4513;" onclick="colorActual='#8B4513'"></div>
+    <div class="color-btn" style="background: #8B4513;" onclick="colorActual='orange'"></div>
     <div class="color-btn" style="background: green;" onclick="colorActual='green'"></div>
     <button class="btn-limpiar" onclick="limpiarCanvas()">🗑<br>LIMPIAR</button>
 </div>
@@ -84,7 +84,7 @@
     let colorActual = 'red';
     let isDrawing = false;
     // COMENTARIO: Cambia 'GROSOR_PINCEL' para ajustar el trazo
-    const GROSOR_PINCEL = 25;
+    const GROSOR_PINCEL = 10;
 
     function cargarEjercicio() {
         const img = new Image();
