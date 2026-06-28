@@ -93,7 +93,7 @@
 
         function siguienteEjercicio() {
             nivelActual = nivelActual < 2 ? nivelActual + 1 : 1;
-            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 4`;
+            document.getElementById('nivel-texto').innerText = `Ejercicio ${nivelActual} de 1`;
             limpiarCanvas();
         }
 
@@ -113,6 +113,9 @@
             const centerY = h * 0.52; 
 
             if (nivel === 1) {
+                dibujarTextoPunteado("10", w * 0.50, centerY, h * 0.85);
+            } 
+           if (nivel === 2) {
                 dibujarTextoPunteado("10", w * 0.50, centerY, h * 0.85);
             } 
 
