@@ -29,7 +29,17 @@
             box-shadow: 0 3px 0 #1565C0;
         }
         .btn-siguiente { background: #FF9800; box-shadow: 0 3px 0 #F57C00; }
-        .btn-capture { background-color: #9C27B0; }
+        .btn-capture { 
+            background-color: #9C27B0; 
+            color: white; 
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-align: center; 
+            font-size: 0.7rem;
+        }
         
         #letrero-titulo {
             background: white; padding: 5px 15px; border-radius: 50px;
@@ -73,8 +83,8 @@
             .header-nav { height: 8vh; }
             #letrero-titulo { font-size: 0.7rem; padding: 3px 8px; }
             .btn-nav, .btn-siguiente { padding: 6px 12px; font-size: 0.7rem; }
-            .color-btn { width: 35px; height: 35px; border: 2px solid #fff; }
-            .paleta-container { gap: 5px; height: 12vh; }
+            .color-btn { width: 30px; height: 30px; border: 2px solid #fff; }
+            .paleta-container { gap: 3px; height: 12vh; }
             .btn-limpiar { padding: 4px 8px; font-size: 0.6rem; }
         }
     </style>
@@ -131,11 +141,13 @@
     function limpiarCanvas() { cargarEjercicio(); }
 
     function capturarPantalla() {
-            const link = document.createElement('a');
-            link.download = `numero_10_ejercicio_${nivelActual}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-        }
+        const link = document.createElement('a');
+        // Usamos el nombre del archivo actual para guardar
+        const nombreArchivo = ejercicios[indiceActual].split('.')[0]; 
+        link.download = `pinta_${nombreArchivo}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }
 
 
     function startDraw(e) { isDrawing = true; ctx.beginPath(); draw(e); }
