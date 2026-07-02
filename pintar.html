@@ -29,7 +29,8 @@
             box-shadow: 0 3px 0 #1565C0;
         }
         .btn-siguiente { background: #FF9800; box-shadow: 0 3px 0 #F57C00; }
-
+        .btn-capture { background-color: #9C27B0; }
+        
         #letrero-titulo {
             background: white; padding: 5px 15px; border-radius: 50px;
             border: 4px solid #FF4500; color: #FF4500; font-weight: bold;
@@ -128,6 +129,14 @@
     }
 
     function limpiarCanvas() { cargarEjercicio(); }
+
+    function capturarPantalla() {
+            const link = document.createElement('a');
+            link.download = `numero_10_ejercicio_${nivelActual}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
+
 
     function startDraw(e) { isDrawing = true; ctx.beginPath(); draw(e); }
     function draw(e) {
